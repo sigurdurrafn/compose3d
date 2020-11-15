@@ -16,8 +16,6 @@ import com.curiouscreature.kotlin.math.Float3
 
 @Composable
 fun App() {
-
-
     MaterialTheme {
         World()
     }
@@ -32,7 +30,7 @@ fun World() {
     )
     val mesh = cube
 
-    val animatedProgress = animatedFloat(0f)
+    val animatedProgress = animatedFloat(0.01f)
     onActive {
         animatedProgress.animateTo(
             targetValue = 360f,
@@ -43,8 +41,10 @@ fun World() {
         )
     }
     Canvas(Modifier.size(400.dp, 400.dp)) {
-        mesh.rotation = Float3(animatedProgress.value + 90, animatedProgress.value + 180, animatedProgress.value)
-        camera.position = Float3(0.01f, 0.01f, -animatedProgress.value)
+//        mesh.rotation = Float3(animatedProgress.value + 90, animatedProgress.value + 180, animatedProgress.value)
+        mesh.rotation = Float3(0.01f, 0.01f, 0.01f)
+        camera.position = Float3(animatedProgress.value + 10f, 0.1f, 10.0f)
+        camera.target = Float3(animatedProgress.value + 0.1f, 0.1f, 1.0f)
 //        mesh.position = Float3(animatedProgress.value, 0.0f, 0.0f)
         val lines = render(camera, mesh)
         lines.forEach {
@@ -52,7 +52,11 @@ fun World() {
             println("Coordinates: $it")
         }
         lines.windowed(size = 2, step = 1) { (start, end) ->
-            drawLine(color = Color.Red, start= Offset(start.x + 200, start.y + 200), end = Offset(end.x + 200, end.y + 200))
+            drawLine(
+                color = Color.Red,
+                start = Offset(start.x + 200, start.y + 200),
+                end = Offset(end.x + 200, end.y + 200)
+            )
         }
     }
 }

@@ -2,7 +2,7 @@ import com.curiouscreature.kotlin.math.*
 
 class Camera(
     var position: Float3 = Float3(),
-    val target: Float3 = Float3()
+    var target: Float3 = Float3()
 )
 
 class Mesh(val name: String, val vertices: Array<Float3>) {
@@ -35,9 +35,11 @@ fun render(camera: Camera, mesh: Mesh): List<Float2> {
 //    println("lookAt(${camera.position}, ${camera.target})")
 
     val viewMatrix = lookAt(camera.position, camera.target)
-    val projectionMatrix = perspective(0.78f, 1f, 0.01f, 2f)
+//    val projectionMatrix = perspective(0.78f, 10f, 0.01f, 2f)
+    val projectionMatrix = projectionMatrix(0.78f, 0.01f, 20f)
     val worldMatrix = rotation(mesh.rotation) * translation(mesh.position)
-    val transformMatrix = worldMatrix * viewMatrix * projectionMatrix
+    val transformMatrix = projectionMatrix * viewMatrix * worldMatrix
+//    val transformMatrix = worldMatrix * viewMatrix * projectionMatrix
 
     println(
         """ViewMatrix:
@@ -51,21 +53,5 @@ fun render(camera: Camera, mesh: Mesh): List<Float2> {
         |""".trimMargin()
     )
 
-    return mesh.vertices.map { project( it, transformMatrix) }
+    return mesh.vertices.map { project(it, transformMatrix) }
 }
-
-//var transformMatrix = worldMatrix * viewMatrix * projectionMatrix;
-
-val cube2 = Mesh(
-    "Cube", arrayOf(
-        Float3(-1f, 1f, 1f),
-        Float3(1f, 1f, 1f),
-        Float3(-1f, -1f, 1f),
-        Float3(-1f, -1f, -1f),
-        Float3(-1f, 1f, -1f),
-        Float3(1f, 1f, -1f),
-        Float3(1f, -1f, 1f),
-        Float3(1f, -1f, -1f),
-    )
-)
-

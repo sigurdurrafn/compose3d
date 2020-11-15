@@ -518,3 +518,16 @@ fun ortho(l: Float, r: Float, b: Float, t: Float, n: Float, f: Float) = Mat4(
         Float4(-(r + l) / (r - l), -(t + b) / (t - b), -(f + n) / (f - n), 1.0f)
 )
 
+fun projectionMatrix(angleOfView: Float, near: Float, far: Float) : Mat4{
+val matrix: Mat4 = Mat4()
+    // set the basic projection matrix
+    val scale = (1 / tan(angleOfView * 0.5 * PI / 180)).toFloat()
+    matrix[0][0] = scale; // scale the x coordinates of the projected point
+    matrix[1][1] = scale; // scale the y coordinates of the projected point
+    matrix[2][2] = -far / (far - near); // used to remap z to [0,1]
+    matrix[3][2] = -far * near / (far - near); // used to remap z [0,1]
+    matrix[2][3] = -1f; // set w = -z
+    matrix[3][3] = 0f;
+    return  matrix
+}
+
