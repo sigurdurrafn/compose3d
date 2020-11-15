@@ -16,12 +16,16 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
+                api(compose.ui)
+                api(compose.animation)
+
             }
         }
         named("androidMain") {
             dependencies {
                 api("androidx.appcompat:appcompat:1.2.0")
                 api("androidx.core:core-ktx:1.3.2")
+                api("org.jetbrains.compose.ui:ui")
             }
         }
         named("commonTest") {
