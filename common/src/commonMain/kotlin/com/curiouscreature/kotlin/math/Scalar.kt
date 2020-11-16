@@ -40,4 +40,4 @@ inline fun fract(v: Float) = v % 1
 
 inline fun sqr(v: Float) = v * v
 
-inline fun pow(x: Float, y: Float) = StrictMath.pow(x.toDouble(), y.toDouble()).toFloat()
+//inline fun pow(x: Float, y: Float) = StrictMath.pow(x.toDouble(), y.toDouble()).toFloat()
