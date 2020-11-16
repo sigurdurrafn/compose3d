@@ -42,22 +42,19 @@ fun World() {
     }
     Canvas(Modifier.size(400.dp, 400.dp)) {
 //        mesh.rotation = Float3(animatedProgress.value + 90, animatedProgress.value + 180, animatedProgress.value)
-        mesh.rotation = Float3(0.01f, 0.01f, 0.01f)
-        camera.position = Float3(animatedProgress.value + 10f, 0.1f, 10.0f)
-        camera.target = Float3(animatedProgress.value + 0.1f, 0.1f, 1.0f)
-//        mesh.position = Float3(animatedProgress.value, 0.0f, 0.0f)
+        mesh.rotation = Float3(animatedProgress.value + 90, animatedProgress.value + 180, 0.01f)
         val lines = render(camera, mesh)
         lines.forEach {
             drawCircle(color = Color.Cyan, radius = 10f, center = Offset(it.x + 200, it.y + 200))
             println("Coordinates: $it")
         }
-        lines.windowed(size = 2, step = 1) { (start, end) ->
-            drawLine(
-                color = Color.Red,
-                start = Offset(start.x + 200, start.y + 200),
-                end = Offset(end.x + 200, end.y + 200)
-            )
-        }
+//        lines.windowed(size = 2, step = 1) { (start, end) ->
+//            drawLine(
+//                color = Color.Red,
+//                start = Offset(start.x + 200, start.y + 200),
+//                end = Offset(end.x + 200, end.y + 200)
+//            )
+//        }
     }
 }
 
