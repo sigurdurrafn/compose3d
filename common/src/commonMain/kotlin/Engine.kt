@@ -52,7 +52,6 @@ fun projectTriangle(triangle: Mat3, transMat: Mat4): List<Float2> {
 
     val newMat = Mat4(triangle.x, triangle.y, triangle.z, Float3())
     val projected = transMat * newMat
-    val projectedTranslated = projected
 
     return listOf(
         Float2(projected[0][0] + 300, projected[0][1] + 300),
