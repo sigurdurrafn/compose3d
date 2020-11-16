@@ -44,24 +44,23 @@ fun World() {
         mesh.rotation = Float3(animatedProgress.value + 90, animatedProgress.value + 180, 0.01f)
         val lines = render3d(camera, mesh)
         lines.forEach { (one, two, three) ->
-            drawCircle(color = Color.Cyan, radius = 10f, center = Offset(one.x + 200, one.y + 200))
-            drawCircle(color = Color.Cyan, radius = 10f, center = Offset(two.x + 200, two.y + 200))
-            drawCircle(color = Color.Cyan, radius = 10f, center = Offset(three.x + 200, three.y + 200))
-            println("Coordinates: $one")
+            drawCircle(color = Color.Cyan, radius = 5f, center = Offset(one.x, one.y))
+            drawCircle(color = Color.Cyan, radius = 5f, center = Offset(two.x, two.y))
+            drawCircle(color = Color.Cyan, radius = 5f, center = Offset(three.x, three.y))
             drawLine(
                 color = Color.Red,
-                start = Offset(one.x + 200, one.y + 200),
-                end = Offset(two.x + 200, two.y + 200)
+                start = Offset(one.x, one.y),
+                end = Offset(two.x, two.y)
             )
             drawLine(
                 color = Color.Red,
-                start = Offset(two.x + 200, two.y + 200),
-                end = Offset(three.x + 200, three.y + 200)
+                start = Offset(two.x, two.y),
+                end = Offset(three.x, three.y)
             )
             drawLine(
                 color = Color.Red,
-                start = Offset(three.x + 200, three.y + 200),
-                end = Offset(one.x + 200, one.y + 200)
+                start = Offset(three.x, three.y),
+                end = Offset(one.x, one.y)
             )
         }
     }
