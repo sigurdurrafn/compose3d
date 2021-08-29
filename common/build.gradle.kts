@@ -18,14 +18,18 @@ kotlin {
                 api(compose.material)
                 api(compose.ui)
                 api(compose.animation)
-
             }
         }
         named("androidMain") {
             dependencies {
-                api("androidx.appcompat:appcompat:1.2.0")
-                api("androidx.core:core-ktx:1.3.2")
+                api("androidx.appcompat:appcompat:1.3.1")
+                api("androidx.core:core-ktx:1.6.0")
                 api("org.jetbrains.compose.ui:ui")
+            }
+        }
+        named("desktopMain") {
+            dependencies {
+                api(compose.desktop.common)
             }
         }
         named("commonTest") {
@@ -38,13 +42,11 @@ kotlin {
 }
 
 android {
-    compileSdkVersion(30)
 
+    compileSdk = 30
     defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(30)
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = 21
+        targetSdk = 30
     }
 
     compileOptions {

@@ -1,13 +1,9 @@
-import androidx.compose.animation.animatedFloat
-import androidx.compose.animation.core.AnimationConstants
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.repeatable
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.onActive
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -30,18 +26,16 @@ fun World() {
     )
     val mesh = cube
 
-    val animatedProgress = animatedFloat(0.01f)
-    onActive {
-        animatedProgress.animateTo(
+    val animatedProgress by rememberInfiniteTransition().animateFloat(
+        initialValue = 0.01f,
             targetValue = 360f,
-            anim = repeatable(
-                iterations = AnimationConstants.Infinite,
+            animationSpec = infiniteRepeatable(
                 animation = tween(durationMillis = 10000, easing = LinearEasing),
             ),
         )
-    }
+
     Canvas(Modifier.size(400.dp, 400.dp)) {
-        mesh.rotation = Float3(animatedProgress.value + 90, animatedProgress.value + 180, 0.01f)
+        mesh.rotation = Float3(animatedProgress + 90, animatedProgress + 180, 0.01f)
         val lines = render3d(camera, mesh)
         lines.forEach { (one, two, three) ->
             drawCircle(color = Color.Cyan, radius = 5f, center = Offset(one.x, one.y))
