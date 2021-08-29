@@ -1,7 +1,10 @@
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -13,7 +16,13 @@ import com.curiouscreature.kotlin.math.Float3
 @Composable
 fun App() {
     MaterialTheme {
-        World()
+        Column {
+            Text("Fancy 3d world of imagination!!!")
+            World()
+            Button({print("button!")}){
+                Text("Button!")
+            }
+        }
     }
 }
 
@@ -28,11 +37,11 @@ fun World() {
 
     val animatedProgress by rememberInfiniteTransition().animateFloat(
         initialValue = 0.01f,
-            targetValue = 360f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 10000, easing = LinearEasing),
-            ),
-        )
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 10000, easing = LinearEasing),
+        ),
+    )
 
     Canvas(Modifier.size(400.dp, 400.dp)) {
         mesh.rotation = Float3(animatedProgress + 90, animatedProgress + 180, 0.01f)

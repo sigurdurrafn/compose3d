@@ -1,8 +1,8 @@
 import com.curiouscreature.kotlin.math.*
 
-class Camera(
-    var position: Float3 = Float3(),
-    var target: Float3 = Float3()
+data class Camera(
+    inline var position: Float3 = Float3(),
+    inline var target: Float3 = Float3()
 )
 
 class Mesh(val name: String, val triangles: Array<Mat3>) {
@@ -48,15 +48,14 @@ fun project(coord: Float3, transMat: Mat4): Float2 {
  * Project triangle to 2d
  * this was a shot in the dark, might be a bug here. Looks ok
  */
-fun projectTriangle(triangle: Mat3, transMat: Mat4): List<Float2> {
+fun Mat3.project(transMat: Mat4): List<Float2> {
 
-    val newMat = Mat4(triangle.x, triangle.y, triangle.z, Float3())
-    val projected = transMat * newMat
+    val projected = transMat * Mat4(this.x, this.y, this.z)
 
     return listOf(
-        Float2(projected[0][0] + 300, projected[0][1] + 300),
-        Float2(projected[1][0] + 300, projected[1][1] + 300),
-        Float2(projected[2][0] + 300, projected[2][1] + 300),
+        Float2(projected[0][0], projected[0][1]),
+        Float2(projected[1][0], projected[1][1]),
+        Float2(projected[2][0], projected[2][1]),
     )
 }
 
@@ -66,7 +65,6 @@ fun render3d(camera: Camera, mesh: Mesh): List<List<Float2>> {
     val projectionMatrix = perspective(0.78f, 1f, 0.01f, 20f)
     val worldMatrix = rotation(mesh.rotation) * translation(mesh.position)
     val transformMatrix = projectionMatrix * viewMatrix * worldMatrix
-
-    return mesh.triangles.map { projectTriangle(it, transformMatrix) }
+    return mesh.triangles.map { it.project(transformMatrix) }
 }
 
