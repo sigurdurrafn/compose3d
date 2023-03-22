@@ -18,6 +18,7 @@ kotlin {
                 api(compose.material)
                 api(compose.ui)
                 api(compose.animation)
+                api(project(":engine"))
             }
         }
         named("androidMain") {

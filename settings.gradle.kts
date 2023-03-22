@@ -1,1 +1,6 @@
-include(":common", ":android", ":desktop")
+include(
+    ":common",
+    ":android",
+    ":desktop",
+    ":engine"
+)
