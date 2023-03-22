@@ -14,11 +14,11 @@ import androidx.compose.ui.unit.dp
 import com.curiouscreature.kotlin.math.Float3
 
 @Composable
-fun App() {
+fun App(mesh: Mesh) {
     MaterialTheme {
         Column {
             Text("Fancy 3d world of imagination!!!")
-            World()
+            World(mesh)
             Button({print("button!")}){
                 Text("Button!")
             }
@@ -27,14 +27,12 @@ fun App() {
 }
 
 @Composable
-fun World() {
+fun World(mesh: Mesh = cube) {
 
     val camera = Camera(
         position = Float3(10f, 0.1f, 10.0f),
         target = Float3(0.1f, 0.1f, 1.0f)
     )
-    val mesh = cube
-
     val animatedProgress by rememberInfiniteTransition().animateFloat(
         initialValue = 0.01f,
         targetValue = 360f,
