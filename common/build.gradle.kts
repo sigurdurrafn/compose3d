@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage")
+@file:Suppress("UnstableApiUsage", "UNUSED_VARIABLE")
 
 plugins {
     kotlin("multiplatform")
@@ -9,7 +9,7 @@ kotlin {
     jvm()
 
     sourceSets {
-        named("commonMain") {
+        val commonMain by getting {
             dependencies {
                 api(compose.runtime)
                 api(compose.foundation)
@@ -19,7 +19,7 @@ kotlin {
                 api(project(":engine"))
             }
         }
-        named("commonTest") {
+        val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
