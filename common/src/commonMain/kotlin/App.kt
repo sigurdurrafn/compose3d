@@ -68,5 +68,3 @@ fun World() {
         }
     }
 }
-
-expect fun getPlatformName(): String

@@ -1,14 +1,12 @@
-import org.jetbrains.compose.compose
+@file:Suppress("UnstableApiUsage")
 
 plugins {
-    id("com.android.library")
     kotlin("multiplatform")
     id("org.jetbrains.compose")
 }
 
 kotlin {
-    android()
-    jvm("desktop")
+    jvm()
 
     sourceSets {
         named("commonMain") {
@@ -21,18 +19,6 @@ kotlin {
                 api(project(":engine"))
             }
         }
-        named("androidMain") {
-            dependencies {
-                api("androidx.appcompat:appcompat:1.3.1")
-                api("androidx.core:core-ktx:1.6.0")
-                api("org.jetbrains.compose.ui:ui")
-            }
-        }
-        named("desktopMain") {
-            dependencies {
-                api(compose.desktop.common)
-            }
-        }
         named("commonTest") {
             dependencies {
                 implementation(kotlin("test-common"))
@@ -42,23 +28,3 @@ kotlin {
     }
 }
 
-android {
-
-    compileSdk = 33
-    defaultConfig {
-        minSdk = 21
-        targetSdk = 33
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    sourceSets {
-        named("main") {
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
-            res.srcDirs("src/androidMain/res")
-        }
-    }
-}
