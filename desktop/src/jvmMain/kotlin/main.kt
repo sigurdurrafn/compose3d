@@ -19,11 +19,11 @@ fun readObjFile(file: File): Array<Mat3> {
     val faces = ArrayList<Mat3>()
     file.forEachLine { line ->
         if (line.startsWith("v ")) {
-            val (x, y, z) = line.split(" ")
+            val (_, x, y, z) = line.split(" ")
             vertices.add(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
         }
         if (line.startsWith("f ")) {
-            val (a, b, c) = line.split(" ")
+            val (_, a, b, c) = line.split(" ")
             faces.add(Mat3(vertices[a.toInt() - 1], vertices[b.toInt() - 1], vertices[c.toInt() - 1]))
         }
     }
