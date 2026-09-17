@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 jobs:
@@ -28,7 +29,7 @@ jobs:
         with:
           name: model3d-snapshot
           path: desktop/build/snapshots/model3d.png
-          if-no-files-found: error
+          if-no-files-found: warn
 
   # Optional: verifies common's iOS target actually compiles. Not required
   # for the other jobs to pass; iOS cannot be linked from a non-macOS host

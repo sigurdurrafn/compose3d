@@ -1,5 +1,9 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
+    // Declared here too: the multiplatform plugin already puts the Kotlin
+    // Android plugin on the classpath, and Gradle refuses a versioned request
+    // from android/build.gradle.kts for a plugin it cannot version-check.
+    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.compose.multiplatform) apply false
     alias(libs.plugins.compose.compiler) apply false
     // AGP is requested directly by android/build.gradle.kts and
