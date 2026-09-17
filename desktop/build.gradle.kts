@@ -14,7 +14,6 @@ kotlin {
 
     sourceSets {
         val jvmMain by getting {
-            resources.srcDir("src/resources")
             dependencies {
                 implementation(compose.desktop.currentOs)
                 api(compose.ui)

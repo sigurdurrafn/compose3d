@@ -11,6 +11,7 @@ import androidx.compose.ui.use
 import com.curiouscreature.kotlin.math.Float3
 import compose3d.Mesh
 import compose3d.Shading
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.skia.EncodedImageFormat
 import java.io.File
 import kotlin.test.Test
@@ -25,7 +26,7 @@ import kotlin.test.assertNotNull
 class SnapshotTest {
     @Test
     fun `renders teapot and cube offscreen`() {
-        val teapot = assertNotNull(loadResourceMesh("teapot.obj"))
+        val teapot = runBlocking { loadTeapotMesh() }
         val cube = Mesh.cube()
         val tile = 300
         val image = ImageComposeScene(width = tile * 3, height = tile * 2).use { scene ->

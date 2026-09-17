@@ -3,10 +3,10 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import compose3d.Mesh
-import compose3d.parseObj
+import kotlinx.coroutines.runBlocking
 
 fun main() = application {
-    val mesh = loadResourceMesh("teapot.obj") ?: Mesh.cube()
+    val mesh = runBlocking { runCatching { loadTeapotMesh() }.getOrDefault(Mesh.cube()) }
     Window(
         onCloseRequest = ::exitApplication,
         title = "Compose 3D",
@@ -14,10 +14,4 @@ fun main() = application {
     ) {
         App(mesh)
     }
-}
-
-/** Loads an OBJ file from the classpath, or returns null when it is missing. */
-fun loadResourceMesh(name: String): Mesh? {
-    val stream = Thread.currentThread().contextClassLoader.getResourceAsStream(name) ?: return null
-    return stream.bufferedReader().use { parseObj(it.readText(), name.substringBeforeLast('.')) }
 }
