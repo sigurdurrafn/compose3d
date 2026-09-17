@@ -8,11 +8,34 @@ Gouraud) and sorts the triangles far to near. `common` holds the `Model3D`
 composable, which hands the sorted triangles to the platform canvas through
 `drawVertices`. `desktop` and `android` are thin launchers.
 
-Known limits of the current renderer: painter's sort instead of a depth buffer,
-triangles crossing the near plane are dropped rather than clipped, and the
-Android `drawVertices` actual is not written yet.
+Known limits of the current renderer: painter's sort instead of a depth
+buffer, and triangles crossing the near plane are dropped rather than
+clipped. The Android `drawVertices` actual
+(`common/src/androidMain/kotlin/DrawTriangles.android.kt`) is written but not
+run on a device or emulator yet.
 
-### Compose Multiplatform Application
+## Build requirements
+
+- JDK 17. The build declares `jvmToolchain(17)` and provisions one through
+  the Foojay resolver if none is installed.
+- Gradle 9.5.0 via `./gradlew`, Kotlin 2.4.20, Compose Multiplatform 1.12.0
+  and AGP 9.1.1, all pinned in `gradle/libs.versions.toml`. Android builds
+  need compileSdk 37; the app's minSdk is 23, which Compose 1.12 requires.
+- The Android SDK, for `common` (which has an Android target) and `android`.
+  `engine` needs neither the SDK nor Google's Maven repository.
+
+## Targets
+
+- **`jvm`** (desktop): the app and the snapshot test run here.
+- **`iosArm64` / `iosSimulatorArm64`**: declared on `engine` and `common`.
+  Only buildable on macOS; the `ios` CI job compiles the simulator target.
+- **`wasmJs`**: declared on `engine` and `common`. No browser entry point
+  exists yet.
+- **`android`**: `common` is an Android library through the
+  `com.android.kotlin.multiplatform.library` plugin and the `:android` app
+  module wraps it.
+
+## Compose Multiplatform Application
 
 **Desktop**
 - `./gradlew run` - run application
@@ -22,3 +45,13 @@ Android `drawVertices` actual is not written yet.
 
 **Android**
 - `./gradlew installDebug` - install Android application on an Android device (on a real device or on an emulator)
+- `./gradlew :android:assembleDebug` - compile without installing
+
+## Continuous integration
+
+`.github/workflows/ci.yml`, on every push and pull request:
+- `test` (ubuntu-latest, JDK 17): `:engine:jvmTest`, `:desktop:jvmTest`,
+  `:common:compileKotlinWasmJs`, then `:android:assembleDebug` (the
+  GitHub-hosted Ubuntu runner ships the Android SDK), then uploads
+  `desktop/build/snapshots/model3d.png` as a build artifact.
+- `ios` (macos-latest): `:common:compileKotlinIosSimulatorArm64`.

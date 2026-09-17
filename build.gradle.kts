@@ -1,22 +1,11 @@
-buildscript {
-
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-
-    dependencies {
-        classpath("org.jetbrains.compose:compose-gradle-plugin:1.3.1")
-        classpath("com.android.tools.build:gradle:7.3.1")
-        classpath(kotlin("gradle-plugin", version = "1.8.10"))
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
+plugins {
+    // Every plugin is declared here with apply false so that all of them,
+    // AGP included, load in the root classloader. The Kotlin plugin's Android
+    // integration references AGP classes; with AGP applied only in the
+    // subprojects it fails with NoClassDefFoundError: BaseExtension.
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.compose.multiplatform) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.kotlin.multiplatform.library) apply false
 }

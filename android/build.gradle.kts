@@ -1,29 +1,29 @@
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.android.application)
+    // AGP 9 compiles Kotlin itself; org.jetbrains.kotlin.android is no longer applied.
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
-
-    compileSdk = 33
+    namespace = "com.myapplication"
+    compileSdk = 37
     defaultConfig {
-        minSdk = 21
-        targetSdk = 33
+        minSdk = 23
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        // Built-in Kotlin takes its jvmTarget from targetCompatibility.
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    namespace = "com.myapplication"
 }
 
 dependencies {
     implementation(project(":common"))
-    implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
 }

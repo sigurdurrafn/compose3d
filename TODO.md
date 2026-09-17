@@ -55,18 +55,46 @@ Current stack: Kotlin 1.8.10, Compose Multiplatform 1.3.1, AGP 7.3.1,
 Gradle 7.4, `compileSdk` 33. This blocks iOS and wasm, and Gradle 7.4 does
 not run on JDK 21.
 
-- [ ] Kotlin 2.x with the Compose compiler Gradle plugin.
-- [ ] Compose Multiplatform 1.8 or later.
-- [ ] AGP 8.x, Gradle 8.x, JDK 17 toolchain, `compileSdk` 35.
-- [ ] Version catalog (`gradle/libs.versions.toml`).
-- [ ] Add `iosArm64`/`iosSimulatorArm64` and `wasmJs` targets to `engine`
-      and `common`. The Skiko `drawVertices` actual should serve iOS and wasm
-      unchanged; verify.
-- [ ] Load the teapot through Compose resources so all targets share it.
-- [ ] GitHub Actions workflow running `:engine:jvmTest` and `:desktop:jvmTest`
-      on push, uploading `desktop/build/snapshots/model3d.png` as an artifact.
+- [x] Kotlin 2.x (2.4.20, the newest non-preview release on Maven Central)
+      with the `org.jetbrains.kotlin.plugin.compose` compiler plugin, applied
+      in every module with `@Composable` code (`common`, `desktop`,
+      `android`).
+- [x] Compose Multiplatform 1.8 or later (1.12.0, the newest non-preview
+      release).
+- [x] AGP 9.1.1 (Jetpack Compose 1.12 requires 9.1+; Kotlin 2.4.20 supports
+      up to 9.3.1), Gradle 9.5.0, JDK 17 toolchain on every module,
+      `compileSdk` 37, `minSdk` 23. `common` uses the
+      `com.android.kotlin.multiplatform.library` plugin and the app module
+      uses AGP's built-in Kotlin, both required by AGP 9.
+- [x] Version catalog (`gradle/libs.versions.toml`), `pluginManagement` +
+      `plugins {}` instead of `buildscript {}`.
+- [x] Add `iosArm64`/`iosSimulatorArm64` and `wasmJs` targets to `engine`
+      and `common`. The Skiko `drawTriangles` actual lives in a shared
+      `skikoMain` source set and serves desktop, iOS and wasm unchanged
+      (`common/src/skikoMain/kotlin/DrawTriangles.skiko.kt`).
+- [x] Add an `android` target to `common`
+      (`com.android.kotlin.multiplatform.library`) with its own `androidMain`
+      `drawTriangles` actual
+      using `android.graphics.Canvas.drawVertices`
+      (`common/src/androidMain/kotlin/DrawTriangles.android.kt`), guarded by
+      the same `BlendMode.DST`-style trap: a plain white paint so vertex
+      colours are not tinted.
+- [x] Load the teapot through Compose resources: moved to
+      `common/src/commonMain/composeResources/files/teapot.obj`, read via the
+      generated `Res.readBytes("files/teapot.obj")`
+      (`common/src/commonMain/kotlin/Resources.kt`), so every target shares
+      it.
+- [x] GitHub Actions workflow (`.github/workflows/ci.yml`): a `test` job
+      (ubuntu-latest) runs `:engine:jvmTest`, `:desktop:jvmTest`,
+      `:common:compileKotlinWasmJs` and `:android:assembleDebug`, and uploads
+      `desktop/build/snapshots/model3d.png` as an artifact; an optional `ios`
+      job (macos-latest) runs `:common:compileKotlinIosSimulatorArm64`.
 
 Done when `./gradlew build` passes on JDK 17 and the demo runs in a browser.
+
+Verification status: CI compiles and tests every target except a real
+device run. Remaining: run the Android app on a device or emulator (see
+item 1) and add a wasm browser entry point so the demo runs in a browser.
 
 ## 4. Renderer correctness and performance
 

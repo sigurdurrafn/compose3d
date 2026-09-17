@@ -1,0 +1,25 @@
+[versions]
+# Newest non-preview releases on Maven Central at the time of writing (see
+# https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin/maven-metadata.xml
+# and https://repo1.maven.org/maven2/org/jetbrains/compose/compose-gradle-plugin/maven-metadata.xml).
+# Compose Multiplatform 1.12.0 maps to Jetpack Compose 1.12, whose Android
+# artifacts require AGP 9.1+, compileSdk 37 and minSdk 23. Kotlin 2.4.20
+# supports Gradle 7.6.3-9.7.0 and AGP 8.5.2-9.3.1; AGP 9.1 needs Gradle 9.3.1+.
+kotlin = "2.4.20"
+compose-multiplatform = "1.12.0"
+agp = "9.1.1"
+androidx-activity-compose = "1.9.3"
+androidx-appcompat = "1.7.0"
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+# AGP 9 drops com.android.library + androidTarget() in one subproject; KMP
+# libraries use this plugin instead.
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }

@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: engine and desktop tests, wasm compile
+        run: ./gradlew --no-daemon :engine:jvmTest :desktop:jvmTest :common:compileKotlinWasmJs
+
+      - name: Android compile
+        run: ./gradlew --no-daemon :android:assembleDebug
+
+      - name: Upload snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: model3d-snapshot
+          path: desktop/build/snapshots/model3d.png
+          if-no-files-found: warn
+
+  # iOS cannot be built from a non-macOS host, so this is where it is checked.
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: iOS simulator compile
+        run: ./gradlew --no-daemon :common:compileKotlinIosSimulatorArm64
