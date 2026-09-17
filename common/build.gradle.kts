@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
 }
 
 kotlin {
@@ -17,7 +17,11 @@ kotlin {
     wasmJs {
         browser()
     }
-    androidTarget()
+    android {
+        namespace = "compose3d.common"
+        compileSdk = 37
+        minSdk = 23
+    }
 
     sourceSets {
         val commonMain by getting {
@@ -51,18 +55,6 @@ kotlin {
         val iosArm64Main by getting { dependsOn(skikoMain) }
         val iosSimulatorArm64Main by getting { dependsOn(skikoMain) }
         val wasmJsMain by getting { dependsOn(skikoMain) }
-    }
-}
-
-android {
-    namespace = "compose3d.common"
-    compileSdk = 35
-    defaultConfig {
-        minSdk = 21
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

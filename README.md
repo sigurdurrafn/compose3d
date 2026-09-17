@@ -18,8 +18,9 @@ run on a device or emulator yet.
 
 - JDK 17. The build declares `jvmToolchain(17)` and provisions one through
   the Foojay resolver if none is installed.
-- Gradle 8.14.5 via `./gradlew`, Kotlin 2.4.20, Compose Multiplatform 1.12.0
-  and AGP 8.9.1, all pinned in `gradle/libs.versions.toml`.
+- Gradle 9.5.0 via `./gradlew`, Kotlin 2.4.20, Compose Multiplatform 1.12.0
+  and AGP 9.1.1, all pinned in `gradle/libs.versions.toml`. Android builds
+  need compileSdk 37; the app's minSdk is 23, which Compose 1.12 requires.
 - The Android SDK, for `common` (which has an Android target) and `android`.
   `engine` needs neither the SDK nor Google's Maven repository.
 
@@ -30,7 +31,8 @@ run on a device or emulator yet.
   Only buildable on macOS; the `ios` CI job compiles the simulator target.
 - **`wasmJs`**: declared on `engine` and `common`. No browser entry point
   exists yet.
-- **`android`**: `common` has an `androidTarget()` and the `:android` app
+- **`android`**: `common` is an Android library through the
+  `com.android.kotlin.multiplatform.library` plugin and the `:android` app
   module wraps it.
 
 ## Compose Multiplatform Application

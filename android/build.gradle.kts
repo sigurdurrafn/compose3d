@@ -1,28 +1,25 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    // AGP 9 compiles Kotlin itself; org.jetbrains.kotlin.android is no longer applied.
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
 }
 
 android {
-    compileSdk = 35
+    namespace = "com.myapplication"
+    compileSdk = 37
     defaultConfig {
-        minSdk = 21
-        targetSdk = 35
+        minSdk = 23
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
 
     compileOptions {
+        // Built-in Kotlin takes its jvmTarget from targetCompatibility.
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    namespace = "com.myapplication"
-}
-
-kotlin {
-    jvmToolchain(17)
 }
 
 dependencies {

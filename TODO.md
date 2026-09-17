@@ -61,17 +61,20 @@ not run on JDK 21.
       `android`).
 - [x] Compose Multiplatform 1.8 or later (1.12.0, the newest non-preview
       release).
-- [x] AGP 8.x (8.9.1, within the 8.5.2-9.3.1 range Kotlin 2.4.20's
-      compatibility guide documents for it), Gradle 8.x (8.14.5), JDK 17
-      toolchain on every module, `compileSdk` 35.
+- [x] AGP 9.1.1 (Jetpack Compose 1.12 requires 9.1+; Kotlin 2.4.20 supports
+      up to 9.3.1), Gradle 9.5.0, JDK 17 toolchain on every module,
+      `compileSdk` 37, `minSdk` 23. `common` uses the
+      `com.android.kotlin.multiplatform.library` plugin and the app module
+      uses AGP's built-in Kotlin, both required by AGP 9.
 - [x] Version catalog (`gradle/libs.versions.toml`), `pluginManagement` +
       `plugins {}` instead of `buildscript {}`.
 - [x] Add `iosArm64`/`iosSimulatorArm64` and `wasmJs` targets to `engine`
       and `common`. The Skiko `drawTriangles` actual lives in a shared
       `skikoMain` source set and serves desktop, iOS and wasm unchanged
       (`common/src/skikoMain/kotlin/DrawTriangles.skiko.kt`).
-- [x] Add an `android` target to `common` (`com.android.library` +
-      `androidTarget()`) with its own `androidMain` `drawTriangles` actual
+- [x] Add an `android` target to `common`
+      (`com.android.kotlin.multiplatform.library`) with its own `androidMain`
+      `drawTriangles` actual
       using `android.graphics.Canvas.drawVertices`
       (`common/src/androidMain/kotlin/DrawTriangles.android.kt`), guarded by
       the same `BlendMode.DST`-style trap: a plain white paint so vertex
