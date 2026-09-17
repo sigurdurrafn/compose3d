@@ -55,18 +55,55 @@ Current stack: Kotlin 1.8.10, Compose Multiplatform 1.3.1, AGP 7.3.1,
 Gradle 7.4, `compileSdk` 33. This blocks iOS and wasm, and Gradle 7.4 does
 not run on JDK 21.
 
-- [ ] Kotlin 2.x with the Compose compiler Gradle plugin.
-- [ ] Compose Multiplatform 1.8 or later.
-- [ ] AGP 8.x, Gradle 8.x, JDK 17 toolchain, `compileSdk` 35.
-- [ ] Version catalog (`gradle/libs.versions.toml`).
-- [ ] Add `iosArm64`/`iosSimulatorArm64` and `wasmJs` targets to `engine`
-      and `common`. The Skiko `drawVertices` actual should serve iOS and wasm
-      unchanged; verify.
-- [ ] Load the teapot through Compose resources so all targets share it.
-- [ ] GitHub Actions workflow running `:engine:jvmTest` and `:desktop:jvmTest`
-      on push, uploading `desktop/build/snapshots/model3d.png` as an artifact.
+- [x] Gradle 8.x (8.14.5), JDK 17 toolchain on every module.
+- [x] Version catalog (`gradle/libs.versions.toml`), `pluginManagement` +
+      `plugins {}` instead of `buildscript {}`.
+- [x] Add `iosArm64`/`iosSimulatorArm64` and `wasmJs` targets to `engine`
+      and `common`. The Skiko `drawTriangles` actual now lives in a shared
+      `skikoMain` source set and serves desktop, iOS and wasm unchanged
+      (`common/src/skikoMain/kotlin/DrawTriangles.skiko.kt`); verified for
+      desktop, iOS and wasm builds could not be linked/downloaded here (see
+      below).
+- [x] Add an `android` target to `common` (`com.android.library` +
+      `androidTarget()`) with its own `androidMain` `drawTriangles` actual
+      using `android.graphics.Canvas.drawVertices`
+      (`common/src/androidMain/kotlin/DrawTriangles.android.kt`), guarded by
+      the same `BlendMode.DST`-style trap: a plain white paint so vertex
+      colours are not tinted. Unverified — see below.
+- [x] Load the teapot through Compose resources
+      (`common/src/commonMain/resources/teapot.obj`,
+      `common/src/commonMain/kotlin/Resources.kt`) so every target shares it.
+- [x] GitHub Actions workflow (`.github/workflows/ci.yml`) running
+      `:engine:jvmTest` and `:desktop:jvmTest` on push and pull_request with
+      JDK 17, uploading `desktop/build/snapshots/model3d.png` as an artifact.
+- [ ] Kotlin 2.x with the Compose compiler Gradle plugin — not done. Pinned
+      to Kotlin 1.9.22 instead: every Compose Multiplatform release from
+      1.6.0 onward adds a runtime dependency (`compose.annotation-internal` /
+      `collection-internal`, then from 1.6.10 `lifecycle` too) that resolves
+      to genuine `androidx.*` artifacts published only to Google's Maven
+      repository, and no release compatible with Kotlin 2.x avoids that; see
+      `gradle/libs.versions.toml` and the toolchain-upgrade session's final
+      report for the version-by-version trail.
+- [ ] Compose Multiplatform 1.8 or later — not done, for the same reason;
+      pinned to 1.5.12, the newest release whose desktop dependency graph is
+      still fully self-contained on Maven Central.
+- [ ] AGP 8.x — written (`agp = "8.9.1"` in the version catalog,
+      `android/build.gradle.kts`, `common/build.android.gradle.kts`) but
+      unverified: AGP and androidx are published only to Google's Maven
+      repository, unreachable in the sandbox this work was done in. The
+      Android app module and common's android target are opt-out
+      (`-PskipAndroid=true`) for that reason.
+- [ ] `compileSdk` 35 — set in the Android build files above; unverified for
+      the same reason.
 
 Done when `./gradlew build` passes on JDK 17 and the demo runs in a browser.
+Not fully done: `./gradlew build` runs everything including the unverified
+Android module and the iOS/wasm targets that cannot link/resolve without
+network access this environment did not have; the verified subset is
+`./gradlew -PskipAndroid=true -PskipNative=true :engine:jvmTest :desktop:jvmTest`.
+The demo has not been run in a browser (wasm for `common` needs Compose
+Multiplatform ≥1.6.0's wasm-js artifacts, out of reach here for the same
+`google()` reason as above; `engine`'s own wasm compile does succeed).
 
 ## 4. Renderer correctness and performance
 

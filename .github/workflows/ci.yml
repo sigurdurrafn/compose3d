@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: engine and desktop tests
+        # Android and the iOS/wasm native targets are skipped here to keep CI
+        # to what desktop/README.md documents as verified: the Android app
+        # and common's android target need AGP and androidx from Google's
+        # Maven repository (-PskipAndroid=true), and declaring iosArm64 /
+        # iosSimulatorArm64 makes the Kotlin Gradle plugin eagerly download
+        # the Kotlin/Native compiler even for this JVM-only task
+        # (-PskipNative=true). See TODO.md section 3 for the trade-off.
+        run: ./gradlew --no-daemon -PskipAndroid=true -PskipNative=true :engine:jvmTest :desktop:jvmTest
+
+      - name: Upload snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: model3d-snapshot
+          path: desktop/build/snapshots/model3d.png
+          if-no-files-found: error
