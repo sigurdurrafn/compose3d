@@ -88,6 +88,21 @@ class RendererTest {
     }
 
     @Test
+    fun `triangles beyond the far plane are dropped`() {
+        val tri = Mesh("t", floatArrayOf(0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f, 0f), intArrayOf(0, 1, 2))
+        val camera = Camera(position = Float3(0f, 0f, 5f), target = Float3(), far = 10f)
+        val out = renderer.render(
+            tri,
+            translation(Float3(0f, 0f, -20f)),
+            camera,
+            400f,
+            400f,
+            cullBackFaces = false,
+        )
+        assertEquals(0, out.triangleCount)
+    }
+
+    @Test
     fun `flat shading lights faces by their orientation`() {
         val light = Light(direction = Float3(0f, 0f, -1f), ambient = 0f)
         val camera = Camera(position = Float3(0f, 0f, 5f), target = Float3())

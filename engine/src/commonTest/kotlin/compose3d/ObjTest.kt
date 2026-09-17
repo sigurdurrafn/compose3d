@@ -55,4 +55,17 @@ class ObjTest {
         val mesh = parseObj("o thing\nv  0   0 0 \nv 1 0 0\r\nv 0 1 0\ns off\nf 1  2 3\n")
         assertEquals(1, mesh.triangleCount)
     }
+
+    @Test
+    fun `strips inline comments from records`() {
+        val mesh = parseObj("v 0 0 0\nv 1 0 0\nv 0 1 0\nf 1 2 3 # body\n")
+        assertEquals(1, mesh.triangleCount)
+    }
+
+    @Test
+    fun `tolerates tab-delimited records`() {
+        val mesh = parseObj("v\t0\t0\t0\nv\t1\t0\t0\nv\t0\t1\t0\nf\t1\t2\t3\n")
+        assertEquals(3, mesh.vertexCount)
+        assertContentEquals(intArrayOf(0, 1, 2), mesh.indices)
+    }
 }

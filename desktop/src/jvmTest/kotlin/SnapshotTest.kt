@@ -2,6 +2,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.ImageComposeScene
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +21,7 @@ import kotlin.test.assertNotNull
  * Renders the teapot and the cube in every shading mode to a PNG under
  * build/snapshots, using Compose's offscreen scene so no display is needed.
  */
+@OptIn(ExperimentalComposeUiApi::class)
 class SnapshotTest {
     @Test
     fun `renders teapot and cube offscreen`() {

@@ -117,12 +117,14 @@ class Renderer {
         val halfH = viewportHeight * 0.5f
         val eye = camera.position
         val near = camera.near
+        val far = camera.far
         val idx = mesh.indices
         var kept = 0
         for (t in 0 until tc) {
             val ia = idx[t * 3]; val ib = idx[t * 3 + 1]; val ic = idx[t * 3 + 2]
             val wa = clip[ia * 4 + 3]; val wb = clip[ib * 4 + 3]; val wcc = clip[ic * 4 + 3]
             if (wa < near || wb < near || wcc < near) continue
+            if (wa > far || wb > far || wcc > far) continue
 
             // Face normal in world space, from the CCW winding.
             val ax = world[ia * 3]; val ay = world[ia * 3 + 1]; val az = world[ia * 3 + 2]

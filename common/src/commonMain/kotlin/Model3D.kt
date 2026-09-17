@@ -6,7 +6,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.curiouscreature.kotlin.math.Float3
-import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
 import compose3d.Camera
 import compose3d.Light
@@ -42,7 +41,7 @@ fun Model3D(
 
     Canvas(modifier) {
         if (size.width <= 0f || size.height <= 0f) return@Canvas
-        val model = rotation(rotation()) * translation(-center)
+        val model = com.curiouscreature.kotlin.math.rotation(rotation()) * translation(-center)
         renderer.render(mesh, model, camera, size.width, size.height, light, argb, shading, cullBackFaces, output)
         if (shading == Shading.WIREFRAME) {
             val p = output.positions

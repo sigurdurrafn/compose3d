@@ -14,17 +14,18 @@ fun parseObj(text: String, name: String = "obj"): Mesh {
     val corners = IntArray(8).let { IntArrayBuilder(it) }
 
     for (rawLine in text.lineSequence()) {
-        val line = rawLine.trim()
+        val commentStart = rawLine.indexOf('#')
+        val line = (if (commentStart < 0) rawLine else rawLine.substring(0, commentStart)).trim()
         if (line.length < 2) continue
         when {
-            line[0] == 'v' && line[1] == ' ' -> {
+            line[0] == 'v' && line[1].isWhitespace() -> {
                 val parts = line.split(WHITESPACE)
                 if (parts.size < 4) continue
                 positions.add(parts[1].toFloat())
                 positions.add(parts[2].toFloat())
                 positions.add(parts[3].toFloat())
             }
-            line[0] == 'f' && line[1] == ' ' -> {
+            line[0] == 'f' && line[1].isWhitespace() -> {
                 val parts = line.split(WHITESPACE)
                 corners.clear()
                 val vertexCount = positions.size / 3
