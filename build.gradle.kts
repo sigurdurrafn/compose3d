@@ -1,22 +1,7 @@
-buildscript {
-
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-
-    dependencies {
-        classpath("org.jetbrains.compose:compose-gradle-plugin:1.3.1")
-        classpath("com.android.tools.build:gradle:7.3.1")
-        classpath(kotlin("gradle-plugin", version = "1.8.10"))
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
+plugins {
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.compose.multiplatform) apply false
+    // AGP is requested directly (not aliased here with apply false) by
+    // android/build.gradle.kts and common/build.gradle.kts, so that resolving
+    // it is skipped entirely along with those when -PskipAndroid=true.
 }
