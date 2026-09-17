@@ -11,8 +11,8 @@ actual fun DrawScope.drawTriangles(positions: FloatArray, colors: IntArray) {
     drawContext.canvas.nativeCanvas.drawVertices(
         VertexMode.TRIANGLES,
         positions,
+        colors,   // Skiko order is positions, colors, texCoords, indices
         null,
-        colors,
         null,
         // Skia blends vertex colours with the paint colour; DST keeps the vertex colours untouched.
         BlendMode.DST,
