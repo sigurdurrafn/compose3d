@@ -19,37 +19,26 @@ run on a device or emulator yet.
 - JDK 17 (set `JAVA_HOME` to it; the Gradle wrapper itself runs fine on newer
   JDKs too).
 - Gradle 8.14.5 (via `./gradlew`, no local Gradle install needed).
-- Versions are pinned in `gradle/libs.versions.toml`: Kotlin 1.9.22 and
-  Compose Multiplatform 1.5.12, lower than the Kotlin 2.x / Compose
-  Multiplatform 1.8+ this project is aiming for. Every Compose Multiplatform
-  release from 1.6.0 onward adds a runtime dependency that resolves to
-  genuine `androidx.annotation` / `androidx.collection` artifacts (and, from
-  1.6.10, `androidx.lifecycle` too), which are published only to Google's
-  Maven repository (`google()`). Raise both versions once building against
-  `google()` is not a constraint; see `TODO.md` section 3 for the details of
-  what was tried.
+- Kotlin 2.4.20 and Compose Multiplatform 1.12.0, pinned in
+  `gradle/libs.versions.toml` (the newest non-preview releases of each on
+  Maven Central at the time of writing). AGP 8.9.1, within the 8.5.2-9.3.1
+  range Kotlin 2.4.20's compatibility guide documents.
+- Network access to `google()` (Google's Maven repository) is required to
+  build `common` (its `androidTarget()`) or `android`, and therefore also
+  `desktop` (which depends on `common`). `engine` has no such dependency and
+  builds with only Maven Central.
 
 ## Targets
 
-- **`jvm`** (desktop): fully supported, this is where the app and the
-  snapshot test run.
-- **`iosArm64` / `iosSimulatorArm64`**: declared on `engine` and `common` so
-  `commonMain` is checked against them, but cannot be linked from a
-  non-macOS host regardless of network access. They are opt-out with
-  `-PskipNative=true` (enabled by default) because merely declaring a native
-  target makes the Kotlin Gradle plugin eagerly download the Kotlin/Native
-  compiler during ordinary project configuration.
-- **`wasmJs`**: declared on `engine` and `common`. `engine` (pure Kotlin, no
-  Compose dependency) compiles for wasm. `common`'s wasm target does not: at
-  the pinned Compose Multiplatform 1.5.12, `compose.runtime`/`compose.ui`
-  simply have no `wasm-js` variant to resolve (wasm support for Compose UI
-  only shipped starting around 1.6.0, out of reach here for the same
-  `google()` reason above).
-- **`android`** (on `common`, plus the `:android` app module): declared with
-  the standard `com.android.library` + `androidTarget()` approach, opt-out
-  with `-PskipAndroid=true` (enabled by default) since AGP and androidx need
-  `google()`. Unverified: this could not be built or tested wherever
-  `google()` is unreachable.
+- **`jvm`** (desktop): the app and the snapshot test run here.
+- **`iosArm64` / `iosSimulatorArm64`**: declared on `engine` and `common`.
+  `commonMain` has no JVM-only APIs, so it type-checks for iOS unchanged.
+  Cannot be linked from a non-macOS host regardless of network access; see
+  the `ios` job in `.github/workflows/ci.yml`.
+- **`wasmJs`**: declared on `engine` and `common`, both expected to compile
+  under Compose Multiplatform 1.8+.
+- **`android`** (on `common`, plus the `:android` app module): the standard
+  `com.android.library` + `androidTarget()` approach.
 
 ## Compose Multiplatform Application
 
@@ -57,16 +46,50 @@ run on a device or emulator yet.
 - `./gradlew run` - run application
 - `./gradlew package` - package native distribution into `build/compose/binaries`
 - `./gradlew :engine:jvmTest :desktop:jvmTest` - unit tests plus an offscreen
-  render of the teapot and cube, written to `desktop/build/snapshots/model3d.png`.
-  Where `google()` or `download.jetbrains.com` are unreachable, add
-  `-PskipAndroid=true -PskipNative=true`.
+  render of the teapot and cube, written to `desktop/build/snapshots/model3d.png`
 
 **Android**
 - `./gradlew installDebug` - install Android application on an Android device (on a real device or on an emulator)
+- `./gradlew :android:assembleDebug` - compile without installing
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` runs `:engine:jvmTest :desktop:jvmTest` on every
-push and pull request with JDK 17, with Android and the native targets
-skipped (see above), and uploads `desktop/build/snapshots/model3d.png` as a
-build artifact.
+`.github/workflows/ci.yml`, on every push and pull request:
+- `test` (ubuntu-latest, JDK 17): `:engine:jvmTest`, `:desktop:jvmTest`,
+  `:common:compileKotlinWasmJs`, then `:android:assembleDebug` (the
+  GitHub-hosted Ubuntu runner ships the Android SDK), then uploads
+  `desktop/build/snapshots/model3d.png` as a build artifact.
+- `ios` (macos-latest, optional/best-effort): `:common:compileKotlinIosSimulatorArm64`.
+
+### A note on developing without access to Google's Maven repository
+
+This project (`common` in particular) was developed and its `common`/
+`desktop` compilation was verified in a sandboxed environment that could
+reach Maven Central but not `google()`. In that kind of environment:
+
+- `:engine:jvmTest`, `:engine:compileKotlinWasmJs` and
+  `:engine:compileKotlinIosArm64` build and pass normally (`engine` has no
+  Android or androidx dependency).
+- Any task touching `:common` (and so `:desktop`, which depends on it) fails
+  at project configuration, because `com.android.library` itself cannot be
+  resolved: `common/build.gradle.kts` applies it unconditionally for
+  `androidTarget()`. The exact failure seen there:
+  ```
+  Plugin [id: 'com.android.library', version: '8.9.1'] was not found in any of the following sources:
+  ...
+     Searched in the following repositories:
+       Gradle Central Plugin Repository
+       MavenRepo
+       Google
+  ```
+- For `:common`/`:desktop`/`:android`, the GitHub Actions workflow above is
+  the verifier, not a local build in such an environment.
+- Declaring `iosArm64`/`iosSimulatorArm64` on a target makes the Kotlin
+  Gradle plugin eagerly download the Kotlin/Native compiler from
+  `download.jetbrains.com` during ordinary project configuration. If that
+  host is also unreachable, point
+  `kotlin.native.distribution.baseDownloadUrl` (in `~/.gradle/gradle.properties`,
+  not this project's `gradle.properties`) at the matching GitHub release,
+  e.g. `https://github.com/JetBrains/kotlin/releases/download/v2.4.20`,
+  which Kotlin's Gradle plugin also accepts as a compiler distribution
+  source.
