@@ -1,20 +1,13 @@
 [versions]
-# Kotlin and Compose Multiplatform are pinned lower than the task's "latest
-# stable" target. See the final report for the full trail; the short version:
-# every Compose Multiplatform release from 1.6.0 onward adds a runtime
-# dependency (org.jetbrains.compose.annotation-internal / collection-internal)
-# that resolves to genuine androidx.annotation / androidx.collection, and from
-# 1.6.10 onward androidx.lifecycle too - all published only to Google's Maven
-# repository, which this sandbox cannot reach, even for the desktop-only
-# target (confirmed by decompiling the compose gradle plugin and by direct
-# 404s against Maven Central for those exact coordinates). 1.5.12 is the
-# newest release still fully self-contained under the org.jetbrains.compose.*
-# group on Maven Central, and 1.9.22 is the newest Kotlin it accepts (the
-# compose gradle plugin hard-codes a Kotlin compatibility table). A
-# network-unrestricted environment should be able to raise both to the
-# versions named in TODO.md (Kotlin 2.x, Compose Multiplatform 1.8+).
-kotlin = "1.9.22"
-compose-multiplatform = "1.5.12"
+# Newest non-preview releases on Maven Central at the time of writing (see
+# https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin/maven-metadata.xml
+# and https://repo1.maven.org/maven2/org/jetbrains/compose/compose-gradle-plugin/maven-metadata.xml).
+# Compose Multiplatform 1.8+ requires at least Kotlin 2.1.0 (2.2.20+ for iOS
+# and web); Kotlin 2.4.20 clears that easily. Per Kotlin's multiplatform
+# compatibility guide, Kotlin 2.4.20 supports Gradle 7.6.3-9.7.0 and AGP
+# 8.5.2-9.3.1, so Gradle 8.14.5 and AGP 8.9.1 (below) are both in range.
+kotlin = "2.4.20"
+compose-multiplatform = "1.12.0"
 agp = "8.9.1"
 androidx-activity-compose = "1.9.3"
 androidx-appcompat = "1.7.0"
@@ -23,6 +16,7 @@ androidx-appcompat = "1.7.0"
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 
