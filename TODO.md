@@ -87,24 +87,13 @@ not run on JDK 21.
       `desktop/build/snapshots/model3d.png` as an artifact; an optional `ios`
       job (macos-latest) runs `:common:compileKotlinIosSimulatorArm64`.
 
-Done when `./gradlew build` passes on JDK 17 and the demo runs in a browser —
-not independently confirmed here; see the note below.
+Done when `./gradlew build` passes on JDK 17 and the demo runs in a browser.
 
-**Note on verification:** this work was developed in a sandboxed environment
-that could reach Maven Central but not Google's Maven repository
-(`google()`), which `common`'s `androidTarget()` (and so `desktop`, which
-depends on `common`) and `android` need. In that environment:
-- `:engine:jvmTest`, `:engine:compileKotlinWasmJs` and
-  `:engine:compileKotlinIosArm64` were run directly and pass (`engine` has no
-  Android/androidx dependency).
-- `:common`, `:desktop` and `:android` compilation was verified only through
-  the GitHub Actions workflow above, not locally — see `README.md` for the
-  exact failure text observed locally (`com.android.library` itself cannot
-  be resolved from `google()`) and confirmation that this is its only cause.
-- The `ios` CI job is best-effort/unconfirmed: `commonMain` has no JVM-only
-  APIs and `engine`'s own iOS compile succeeds, but `common`'s iOS compile
-  (with the Compose UI dependencies) was never actually run anywhere in this
-  work. Treat it as needing manual verification until a CI run confirms it.
+Verification status: `engine` tests, wasm compile and iOS klib compile were
+run locally. `common`, `desktop` and `android` were only compiled in CI,
+because the development sandbox cannot reach Google's Maven repository.
+Remaining: confirm the `ios` CI job on `common`, run the Android app on a
+device (see item 1), and add a wasm browser entry point.
 
 ## 4. Renderer correctness and performance
 

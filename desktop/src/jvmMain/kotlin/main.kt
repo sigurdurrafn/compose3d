@@ -5,13 +5,15 @@ import androidx.compose.ui.window.rememberWindowState
 import compose3d.Mesh
 import kotlinx.coroutines.runBlocking
 
-fun main() = application {
+fun main() {
     val mesh = runBlocking { runCatching { loadTeapotMesh() }.getOrDefault(Mesh.cube()) }
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Compose 3D",
-        state = rememberWindowState(width = 640.dp, height = 800.dp),
-    ) {
-        App(mesh)
+    application {
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "Compose 3D",
+            state = rememberWindowState(width = 640.dp, height = 800.dp),
+        ) {
+            App(mesh)
+        }
     }
 }

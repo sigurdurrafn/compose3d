@@ -51,12 +51,6 @@ kotlin {
         val iosArm64Main by getting { dependsOn(skikoMain) }
         val iosSimulatorArm64Main by getting { dependsOn(skikoMain) }
         val wasmJsMain by getting { dependsOn(skikoMain) }
-
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.androidx.appcompat)
-            }
-        }
     }
 }
 

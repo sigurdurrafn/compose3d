@@ -16,29 +16,22 @@ run on a device or emulator yet.
 
 ## Build requirements
 
-- JDK 17 (set `JAVA_HOME` to it; the Gradle wrapper itself runs fine on newer
-  JDKs too).
-- Gradle 8.14.5 (via `./gradlew`, no local Gradle install needed).
-- Kotlin 2.4.20 and Compose Multiplatform 1.12.0, pinned in
-  `gradle/libs.versions.toml` (the newest non-preview releases of each on
-  Maven Central at the time of writing). AGP 8.9.1, within the 8.5.2-9.3.1
-  range Kotlin 2.4.20's compatibility guide documents.
-- Network access to `google()` (Google's Maven repository) is required to
-  build `common` (its `androidTarget()`) or `android`, and therefore also
-  `desktop` (which depends on `common`). `engine` has no such dependency and
-  builds with only Maven Central.
+- JDK 17. The build declares `jvmToolchain(17)` and provisions one through
+  the Foojay resolver if none is installed.
+- Gradle 8.14.5 via `./gradlew`, Kotlin 2.4.20, Compose Multiplatform 1.12.0
+  and AGP 8.9.1, all pinned in `gradle/libs.versions.toml`.
+- The Android SDK, for `common` (which has an Android target) and `android`.
+  `engine` needs neither the SDK nor Google's Maven repository.
 
 ## Targets
 
 - **`jvm`** (desktop): the app and the snapshot test run here.
 - **`iosArm64` / `iosSimulatorArm64`**: declared on `engine` and `common`.
-  `commonMain` has no JVM-only APIs, so it type-checks for iOS unchanged.
-  Cannot be linked from a non-macOS host regardless of network access; see
-  the `ios` job in `.github/workflows/ci.yml`.
-- **`wasmJs`**: declared on `engine` and `common`, both expected to compile
-  under Compose Multiplatform 1.8+.
-- **`android`** (on `common`, plus the `:android` app module): the standard
-  `com.android.library` + `androidTarget()` approach.
+  Only buildable on macOS; the `ios` CI job compiles the simulator target.
+- **`wasmJs`**: declared on `engine` and `common`. No browser entry point
+  exists yet.
+- **`android`**: `common` has an `androidTarget()` and the `:android` app
+  module wraps it.
 
 ## Compose Multiplatform Application
 
@@ -59,37 +52,4 @@ run on a device or emulator yet.
   `:common:compileKotlinWasmJs`, then `:android:assembleDebug` (the
   GitHub-hosted Ubuntu runner ships the Android SDK), then uploads
   `desktop/build/snapshots/model3d.png` as a build artifact.
-- `ios` (macos-latest, optional/best-effort): `:common:compileKotlinIosSimulatorArm64`.
-
-### A note on developing without access to Google's Maven repository
-
-This project (`common` in particular) was developed and its `common`/
-`desktop` compilation was verified in a sandboxed environment that could
-reach Maven Central but not `google()`. In that kind of environment:
-
-- `:engine:jvmTest`, `:engine:compileKotlinWasmJs` and
-  `:engine:compileKotlinIosArm64` build and pass normally (`engine` has no
-  Android or androidx dependency).
-- Any task touching `:common` (and so `:desktop`, which depends on it) fails
-  at project configuration, because `com.android.library` itself cannot be
-  resolved: `common/build.gradle.kts` applies it unconditionally for
-  `androidTarget()`. The exact failure seen there:
-  ```
-  Plugin [id: 'com.android.library', version: '8.9.1'] was not found in any of the following sources:
-  ...
-     Searched in the following repositories:
-       Gradle Central Plugin Repository
-       MavenRepo
-       Google
-  ```
-- For `:common`/`:desktop`/`:android`, the GitHub Actions workflow above is
-  the verifier, not a local build in such an environment.
-- Declaring `iosArm64`/`iosSimulatorArm64` on a target makes the Kotlin
-  Gradle plugin eagerly download the Kotlin/Native compiler from
-  `download.jetbrains.com` during ordinary project configuration. If that
-  host is also unreachable, point
-  `kotlin.native.distribution.baseDownloadUrl` (in `~/.gradle/gradle.properties`,
-  not this project's `gradle.properties`) at the matching GitHub release,
-  e.g. `https://github.com/JetBrains/kotlin/releases/download/v2.4.20`,
-  which Kotlin's Gradle plugin also accepts as a compiler distribution
-  source.
+- `ios` (macos-latest, `continue-on-error`): `:common:compileKotlinIosSimulatorArm64`.

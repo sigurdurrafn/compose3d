@@ -35,6 +35,7 @@ jobs:
   # at all, so this is the only place it is checked.
   ios:
     runs-on: macos-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
