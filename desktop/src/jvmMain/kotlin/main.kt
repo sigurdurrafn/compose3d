@@ -1,31 +1,23 @@
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.curiouscreature.kotlin.math.Float3
-import com.curiouscreature.kotlin.math.Mat3
-import java.io.File
+import androidx.compose.ui.window.rememberWindowState
+import compose3d.Mesh
+import compose3d.parseObj
 
 fun main() = application {
-    val file = File("src/resources/teapot.obj")
-    Window(onCloseRequest = ::exitApplication) {
-        App(Mesh("mesh", readObjFile(file)))
+    val mesh = loadResourceMesh("teapot.obj") ?: Mesh.cube()
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Compose 3D",
+        state = rememberWindowState(width = 640.dp, height = 800.dp),
+    ) {
+        App(mesh)
     }
 }
 
-/**
- * Reads a .obj file and returns an array of triangles
- */
-fun readObjFile(file: File): Array<Mat3> {
-    val vertices = ArrayList<Float3>()
-    val faces = ArrayList<Mat3>()
-    file.forEachLine { line ->
-        if (line.startsWith("v ")) {
-            val (_, x, y, z) = line.split(" ")
-            vertices.add(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
-        }
-        if (line.startsWith("f ")) {
-            val (_, a, b, c) = line.split(" ")
-            faces.add(Mat3(vertices[a.toInt() - 1], vertices[b.toInt() - 1], vertices[c.toInt() - 1]))
-        }
-    }
-    return faces.toTypedArray()
+/** Loads an OBJ file from the classpath, or returns null when it is missing. */
+fun loadResourceMesh(name: String): Mesh? {
+    val stream = Thread.currentThread().contextClassLoader.getResourceAsStream(name) ?: return null
+    return stream.bufferedReader().use { parseObj(it.readText(), name.substringBeforeLast('.')) }
 }

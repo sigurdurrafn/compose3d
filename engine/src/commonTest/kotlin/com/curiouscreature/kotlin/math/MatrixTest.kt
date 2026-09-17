@@ -18,6 +18,7 @@ package com.curiouscreature.kotlin.math
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class MatrixTest {
     @Test
@@ -32,9 +33,9 @@ class MatrixTest {
         )
     }
 
-    @Test()
+    @Test
     fun `Mat3 of fails if less than 9 arguments`() {
-        Mat3.of(*8.floatArray())
+        assertFailsWith<IllegalArgumentException> { Mat3.of(*8.floatArray()) }
     }
 
     @Test
@@ -55,9 +56,9 @@ class MatrixTest {
         )
     }
 
-    @Test()
+    @Test
     fun `Mat4 of fails if less than 16 arguments`() {
-        Mat4.of(*15.floatArray())
+        assertFailsWith<IllegalArgumentException> { Mat4.of(*15.floatArray()) }
     }
 
     @Test

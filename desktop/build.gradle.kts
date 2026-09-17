@@ -12,10 +12,16 @@ kotlin {
     }
     sourceSets {
         named("jvmMain") {
+            resources.srcDir("src/resources")
             dependencies {
                 implementation(compose.desktop.currentOs)
                 api(compose.ui)
                 implementation(project(":common"))
+            }
+        }
+        named("jvmTest") {
+            dependencies {
+                implementation(kotlin("test"))
             }
         }
     }
