@@ -92,11 +92,9 @@ not run on JDK 21.
 
 Done when `./gradlew build` passes on JDK 17 and the demo runs in a browser.
 
-Verification status: `engine` tests, wasm compile and iOS klib compile were
-run locally. `common`, `desktop` and `android` were only compiled in CI,
-because the development sandbox cannot reach Google's Maven repository.
-Remaining: confirm the `ios` CI job on `common`, run the Android app on a
-device (see item 1), and add a wasm browser entry point.
+Verification status: CI compiles and tests every target except a real
+device run. Remaining: run the Android app on a device or emulator (see
+item 1) and add a wasm browser entry point so the demo runs in a browser.
 
 ## 4. Renderer correctness and performance
 

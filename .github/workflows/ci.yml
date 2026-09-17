@@ -31,12 +31,9 @@ jobs:
           path: desktop/build/snapshots/model3d.png
           if-no-files-found: warn
 
-  # Optional: verifies common's iOS target actually compiles. Not required
-  # for the other jobs to pass; iOS cannot be linked from a non-macOS host
-  # at all, so this is the only place it is checked.
+  # iOS cannot be built from a non-macOS host, so this is where it is checked.
   ios:
     runs-on: macos-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 

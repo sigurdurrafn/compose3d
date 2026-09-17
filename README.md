@@ -54,4 +54,4 @@ run on a device or emulator yet.
   `:common:compileKotlinWasmJs`, then `:android:assembleDebug` (the
   GitHub-hosted Ubuntu runner ships the Android SDK), then uploads
   `desktop/build/snapshots/model3d.png` as a build artifact.
-- `ios` (macos-latest, `continue-on-error`): `:common:compileKotlinIosSimulatorArm64`.
+- `ios` (macos-latest): `:common:compileKotlinIosSimulatorArm64`.
