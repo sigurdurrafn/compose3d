@@ -1,17 +1,19 @@
-import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("multiplatform") // kotlin("jvm") doesn't work well in IDEA/AndroidStudio (https://github.com/JetBrains/compose-jb/issues/22)
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose.multiplatform)
+    // No separate compose-compiler plugin: see the version-pin note in
+    // gradle/libs.versions.toml.
 }
 
 kotlin {
-    jvm {
-        withJava()
-    }
+    jvmToolchain(17)
+
+    jvm()
+
     sourceSets {
-        named("jvmMain") {
+        val jvmMain by getting {
             resources.srcDir("src/resources")
             dependencies {
                 implementation(compose.desktop.currentOs)
@@ -19,7 +21,7 @@ kotlin {
                 implementation(project(":common"))
             }
         }
-        named("jvmTest") {
+        val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }

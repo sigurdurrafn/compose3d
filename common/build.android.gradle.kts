@@ -1,18 +1,15 @@
 @file:Suppress("UnstableApiUsage", "UNUSED_VARIABLE")
 
-// This is the build file used when Android is skipped (-PskipAndroid=true,
-// which is the default in this sandbox). It has no android target and no AGP
-// dependency at all. The Android-enabled build file is
-// build.android.gradle.kts, swapped in by settings.gradle.kts when Android is
-// not skipped; keep the two in sync when editing targets or dependencies.
+// Used instead of build.gradle.kts when Android is not skipped (see
+// settings.gradle.kts). Unverified in this sandbox: AGP and androidx are
+// published only to Google's Maven repository, which is unreachable here.
+// Keep targets and dependencies in sync with build.gradle.kts when editing.
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.multiplatform)
-    // No separate compose-compiler plugin: see the note in
-    // gradle/libs.versions.toml about the Kotlin/Compose Multiplatform
-    // version pin. Compose Multiplatform 1.6.2 predates the Kotlin 2.0 K2
-    // compiler plugin split and resolves its own compose compiler internally.
+    // No separate compose-compiler plugin: see build.gradle.kts.
+    alias(libs.plugins.android.library)
 }
 
 // See engine/build.gradle.kts for why native targets are opt-out.
@@ -30,6 +27,9 @@ kotlin {
     wasmJs {
         browser()
     }
+    androidTarget()
+
+    applyDefaultHierarchyTemplate()
 
     sourceSets {
         val commonMain by getting {
@@ -53,17 +53,35 @@ kotlin {
 
         // The Skiko `drawTriangles` actual (org.jetbrains.skia.Canvas) is the
         // same call on every target whose Compose UI implementation is
-        // backed by Skia: desktop (jvm), iOS and wasmJs. Android's Compose UI
-        // is backed by the platform's own android.graphics.Canvas instead, so
-        // it gets its own actual in build.android.gradle.kts.
+        // backed by Skia: desktop (jvm), iOS and wasmJs.
         val skikoMain by creating {
             dependsOn(commonMain)
         }
         val jvmMain by getting { dependsOn(skikoMain) }
         if (!skipNative) {
-            val iosArm64Main by getting { dependsOn(skikoMain) }
-            val iosSimulatorArm64Main by getting { dependsOn(skikoMain) }
+            val iosMain by getting { dependsOn(skikoMain) }
         }
         val wasmJsMain by getting { dependsOn(skikoMain) }
+
+        // Android's Compose UI is backed by the platform's own
+        // android.graphics.Canvas, not Skiko, so it gets its own actual
+        // (src/androidMain/kotlin/DrawTriangles.android.kt).
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.androidx.appcompat)
+            }
+        }
+    }
+}
+
+android {
+    namespace = "compose3d.common"
+    compileSdk = 35
+    defaultConfig {
+        minSdk = 21
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }

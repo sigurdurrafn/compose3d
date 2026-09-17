@@ -1,29 +1,37 @@
+// Only evaluated when Android is not skipped (see settings.gradle.kts).
+// Unverified in this sandbox: AGP and androidx are published only to
+// Google's Maven repository, which is unreachable here.
+
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.multiplatform)
+    // No separate compose-compiler plugin: see the version-pin note in
+    // gradle/libs.versions.toml.
 }
 
 android {
-
-    compileSdk = 33
+    compileSdk = 35
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     namespace = "com.myapplication"
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     implementation(project(":common"))
-    implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
 }
