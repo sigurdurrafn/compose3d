@@ -1,35 +1,23 @@
 @file:Suppress("UnstableApiUsage", "UNUSED_VARIABLE")
 
-// This is the build file used when Android is skipped (-PskipAndroid=true,
-// which is the default in this sandbox). It has no android target and no AGP
-// dependency at all. The Android-enabled build file is
-// build.android.gradle.kts, swapped in by settings.gradle.kts when Android is
-// not skipped; keep the two in sync when editing targets or dependencies.
-
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.multiplatform)
-    // No separate compose-compiler plugin: see the note in
-    // gradle/libs.versions.toml about the Kotlin/Compose Multiplatform
-    // version pin. Compose Multiplatform 1.6.2 predates the Kotlin 2.0 K2
-    // compiler plugin split and resolves its own compose compiler internally.
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.android.library)
 }
-
-// See engine/build.gradle.kts for why native targets are opt-out.
-val skipNative = gradle.startParameter.projectProperties["skipNative"] == "true"
 
 kotlin {
     jvmToolchain(17)
 
     jvm()
-    if (!skipNative) {
-        iosArm64()
-        iosSimulatorArm64()
-    }
-    @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl::class)
+    iosArm64()
+    iosSimulatorArm64()
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         browser()
     }
+    androidTarget()
 
     sourceSets {
         val commonMain by getting {
@@ -55,15 +43,37 @@ kotlin {
         // same call on every target whose Compose UI implementation is
         // backed by Skia: desktop (jvm), iOS and wasmJs. Android's Compose UI
         // is backed by the platform's own android.graphics.Canvas instead, so
-        // it gets its own actual in build.android.gradle.kts.
+        // it gets its own actual (src/androidMain/kotlin/DrawTriangles.android.kt).
         val skikoMain by creating {
             dependsOn(commonMain)
         }
         val jvmMain by getting { dependsOn(skikoMain) }
-        if (!skipNative) {
-            val iosArm64Main by getting { dependsOn(skikoMain) }
-            val iosSimulatorArm64Main by getting { dependsOn(skikoMain) }
-        }
+        val iosArm64Main by getting { dependsOn(skikoMain) }
+        val iosSimulatorArm64Main by getting { dependsOn(skikoMain) }
         val wasmJsMain by getting { dependsOn(skikoMain) }
+
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.androidx.appcompat)
+            }
+        }
     }
+}
+
+android {
+    namespace = "compose3d.common"
+    compileSdk = 35
+    defaultConfig {
+        minSdk = 21
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+compose.resources {
+    // Pinned explicitly rather than relying on the `{group}.{module}.generated.resources`
+    // default, since this project sets no group id.
+    packageOfResClass = "compose3d.resources"
 }

@@ -1,13 +1,8 @@
-// Only evaluated when Android is not skipped (see settings.gradle.kts).
-// Unverified in this sandbox: AGP and androidx are published only to
-// Google's Maven repository, which is unreachable here.
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.multiplatform)
-    // No separate compose-compiler plugin: see the version-pin note in
-    // gradle/libs.versions.toml.
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
