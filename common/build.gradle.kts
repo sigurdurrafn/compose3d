@@ -1,4 +1,5 @@
 @file:Suppress("UnstableApiUsage", "UNUSED_VARIABLE")
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -9,6 +10,25 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
+
+    // The Skiko `drawTriangles` actual (org.jetbrains.skia.Canvas) is the same
+    // call on every target whose Compose UI is backed by Skia: desktop (jvm),
+    // iOS and wasmJs. Android's Compose UI is backed by the platform's own
+    // android.graphics.Canvas instead, so it stays out of this group and gets
+    // its own actual in src/androidMain.
+    //
+    // Declaring the shared source set as a hierarchy group rather than wiring
+    // dependsOn by hand keeps Kotlin's default template in play; explicit
+    // dependsOn edges switch it off for the whole project.
+    applyDefaultHierarchyTemplate {
+        common {
+            group("skiko") {
+                withJvm()
+                withIos()
+                withWasmJs()
+            }
+        }
+    }
 
     jvm()
     iosArm64()
@@ -43,19 +63,6 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
-
-        // The Skiko `drawTriangles` actual (org.jetbrains.skia.Canvas) is the
-        // same call on every target whose Compose UI implementation is
-        // backed by Skia: desktop (jvm), iOS and wasmJs. Android's Compose UI
-        // is backed by the platform's own android.graphics.Canvas instead, so
-        // it gets its own actual (src/androidMain/kotlin/DrawTriangles.android.kt).
-        val skikoMain by creating {
-            dependsOn(commonMain)
-        }
-        val jvmMain by getting { dependsOn(skikoMain) }
-        val iosArm64Main by getting { dependsOn(skikoMain) }
-        val iosSimulatorArm64Main by getting { dependsOn(skikoMain) }
-        val wasmJsMain by getting { dependsOn(skikoMain) }
     }
 }
 
