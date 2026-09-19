@@ -1,5 +1,5 @@
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.skiaCanvas
 import org.jetbrains.skia.BlendMode
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.VertexMode
@@ -8,7 +8,7 @@ private val vertexPaint = Paint().apply { isAntiAlias = false }
 
 actual fun DrawScope.drawTriangles(positions: FloatArray, colors: IntArray) {
     if (positions.isEmpty()) return
-    drawContext.canvas.nativeCanvas.drawVertices(
+    drawContext.canvas.skiaCanvas.drawVertices(
         VertexMode.TRIANGLES,
         positions,
         colors,   // Skiko order is positions, colors, texCoords, indices

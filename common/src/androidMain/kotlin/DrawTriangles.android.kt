@@ -12,7 +12,7 @@ private val vertexPaint = Paint().apply { color = AndroidColor.WHITE }
 
 actual fun DrawScope.drawTriangles(positions: FloatArray, colors: IntArray) {
     if (positions.isEmpty()) return
-    (drawContext.canvas.nativeCanvas as AndroidCanvas).drawVertices(
+    drawContext.canvas.nativeCanvas.drawVertices(
         AndroidCanvas.VertexMode.TRIANGLES,
         positions.size,
         positions,
