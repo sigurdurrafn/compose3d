@@ -37,8 +37,7 @@ run on a device or emulator yet.
 - **`jvm`** (desktop): the app and the snapshot test run here.
 - **`iosArm64` / `iosSimulatorArm64`**: declared on `engine` and `common`.
   Only buildable on macOS; the `ios` CI job compiles the simulator target.
-- **`wasmJs`**: declared on `engine` and `common`. No browser entry point
-  exists yet.
+- **`wasmJs`**: the `web` module is a browser build of the same demo.
 - **`android`**: `common` is an Android library through the
   `com.android.kotlin.multiplatform.library` plugin and the `:android` app
   module wraps it.
@@ -51,6 +50,11 @@ run on a device or emulator yet.
 - `./gradlew :engine:jvmTest :desktop:jvmTest` - unit tests plus an offscreen
   render of the teapot and cube, written to `desktop/build/snapshots/model3d.png`
 
+**Web**
+- `./gradlew :web:wasmJsBrowserDevelopmentRun` - serve the demo at localhost
+- `./gradlew :web:wasmJsBrowserDistribution` - build a static site into
+  `web/build/dist/wasmJs/productionExecutable`
+
 **Android**
 - `./gradlew installDebug` - install Android application on an Android device (on a real device or on an emulator)
 - `./gradlew :android:assembleDebug` - compile without installing
@@ -59,7 +63,7 @@ run on a device or emulator yet.
 
 `.github/workflows/ci.yml`, on every push and pull request:
 - `test` (ubuntu-latest, JDK 17): `:engine:jvmTest`, `:desktop:jvmTest`,
-  `:common:compileKotlinWasmJs`, then `:android:assembleDebug` (the
-  GitHub-hosted Ubuntu runner ships the Android SDK), then uploads
-  `desktop/build/snapshots/model3d.png` as a build artifact.
+  `:web:wasmJsBrowserDistribution`, then `:android:assembleDebug` (the
+  GitHub-hosted Ubuntu runner ships the Android SDK), then uploads the
+  offscreen snapshot and the web bundle as build artifacts.
 - `ios` (macos-latest): `:common:compileKotlinIosSimulatorArm64`.

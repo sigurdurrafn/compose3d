@@ -23,4 +23,5 @@ include(
     ":android",
     ":desktop",
     ":engine",
+    ":web",
 )
