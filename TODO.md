@@ -13,41 +13,46 @@ done so it is clear when to stop.
 
 ## 1. Android `drawTriangles` actual
 
-The only platform without a filled-triangle path. `common` is a JVM-only
-module today, so the Android app picks up the desktop Skiko actual, which
-cannot work at runtime.
-
-- [ ] Give `common` an `android` target with `androidMain` next to `jvmMain`
-      (blocked on item 3 for a sane AGP/Compose pairing, can be done together).
-- [ ] Implement `DrawScope.drawTriangles` with
-      `android.graphics.Canvas.drawVertices(TRIANGLES, count, verts, 0, null, 0, colors, 0, null, 0, 0, paint)`.
-      Android's API takes counts and offsets, so no per-frame array copy is
-      needed there.
-- [ ] Check the minimum API level at which hardware-accelerated canvases
-      honour `drawVertices` with per-vertex colours, and either raise `minSdk`
-      or fall back to `drawPath` per triangle below it.
+- [x] Give `common` an `android` target with `androidMain` next to the Skiko
+      source set (landed with item 3).
+- [x] Implement `DrawScope.drawTriangles` with
+      `android.graphics.Canvas.drawVertices`
+      (`common/src/androidMain/kotlin/DrawTriangles.android.kt`). Android's
+      API takes counts and offsets, so no per-frame array copy is needed
+      there.
+- [x] Check the minimum API level at which hardware-accelerated canvases
+      honour `drawVertices` with per-vertex colours. The answer is API 29,
+      and Compose always draws into a hardware-accelerated canvas, so below
+      29 the renderer would silently draw nothing. `minSdk` is now 29 in both
+      Android modules rather than carrying a `drawPath` fallback.
+- [x] Point the Android app at the teapot instead of the cube, so a device
+      run exercises the real mesh.
 - [ ] Run the demo on a device or emulator and confirm colours match desktop
       (watch for the paint colour tinting the vertex colours, the same trap as
       `BlendMode.DST` on Skia).
 
-Done when the Android app shows the shaded cube and teapot.
+Done when the Android app shows the shaded cube and teapot. Only the device
+run is left; it needs hardware or an emulator, which CI does not provide.
 
 ## 2. Orbit camera and gestures
 
-The demo only auto-rotates. A viewer needs drag to orbit and pinch to zoom.
-
-- [ ] `OrbitCameraState` holder: yaw, pitch, distance, target. Pitch clamped
-      just short of the poles. Exposes a `Camera` for the renderer.
-- [ ] `Modifier.orbit(state)` built on `detectTransformGestures` (pan,
-      zoom) plus mouse scroll on desktop.
-- [ ] Drive animation with `withFrameNanos` in a `LaunchedEffect` instead of
-      `rememberInfiniteTransition`, so idle scenes stop redrawing.
-- [ ] Keep all per-frame reads inside the draw lambda so gestures redraw
-      without recomposing.
+- [x] `OrbitCameraState` holder: yaw, pitch, distance, target. Pitch clamped
+      just short of the poles, distance clamped around the framed distance.
+      Exposes a `Camera` for the renderer, reusing one instance rather than
+      allocating per frame. The angle maths lives in `engine`
+      (`compose3d/Orbit.kt`) so it is unit-testable without Compose.
+- [x] `Modifier.orbit(state)` built on `detectTransformGestures` for drag and
+      pinch, plus a raw pointer handler for scroll wheels.
+- [x] Drive animation with `withFrameNanos` in a `LaunchedEffect` instead of
+      `rememberInfiniteTransition`, so a still scene asks for no frames.
+- [x] Keep all per-frame reads inside the draw lambda: `Model3D` now takes
+      `camera: () -> Camera` and `transform: () -> Mat4` rather than values,
+      so gestures redraw without recomposing.
 - [ ] Optional: velocity-based inertia on release.
 
 Done when the teapot can be orbited and zoomed on desktop with mouse and on
-Android with touch.
+Android with touch. Desktop and the offscreen snapshot are covered; the
+touch half shares the device run above.
 
 ## 3. Toolchain upgrade and new targets
 

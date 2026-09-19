@@ -6,7 +6,6 @@ import com.curiouscreature.kotlin.math.degrees
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.lookAt
 import com.curiouscreature.kotlin.math.perspective
-import kotlin.math.sin
 
 /**
  * Perspective camera. [fov] is the vertical field of view in radians.
@@ -35,7 +34,7 @@ class Camera(
          */
         fun framing(bounds: Bounds, direction: Float3 = Float3(0f, 0f, 1f), fov: Float = 1f, margin: Float = 1.1f): Camera {
             val radius = bounds.radius.coerceAtLeast(1e-3f)
-            val distance = radius * margin / sin(fov / 2f)
+            val distance = framingDistance(radius, fov, margin)
             val dir = com.curiouscreature.kotlin.math.normalize(direction)
             return Camera(
                 position = bounds.center + dir * distance,

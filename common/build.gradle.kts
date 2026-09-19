@@ -20,7 +20,8 @@ kotlin {
     android {
         namespace = "compose3d.common"
         compileSdk = 37
-        minSdk = 23
+        // See android/build.gradle.kts: drawVertices needs API 29.
+        minSdk = 29
     }
 
     sourceSets {

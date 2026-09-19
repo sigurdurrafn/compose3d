@@ -9,7 +9,10 @@ android {
     namespace = "com.myapplication"
     compileSdk = 37
     defaultConfig {
-        minSdk = 23
+        // Canvas.drawVertices is only honoured on a hardware-accelerated
+        // canvas from API 29, and Compose always draws into one, so below 29
+        // the renderer would silently draw nothing.
+        minSdk = 29
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"

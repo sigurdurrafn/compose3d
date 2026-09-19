@@ -5,8 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.curiouscreature.kotlin.math.Float3
-import com.curiouscreature.kotlin.math.translation
+import com.curiouscreature.kotlin.math.Mat4
 import compose3d.Camera
 import compose3d.Light
 import compose3d.Mesh
@@ -14,16 +13,23 @@ import compose3d.RenderOutput
 import compose3d.Renderer
 import compose3d.Shading
 
+/** Shared because the renderer only reads the model matrix. */
+private val IDENTITY = Mat4()
+
 /**
- * Draws [mesh] centred in the composable, rotated by [rotation] (Euler angles
- * in degrees, read at draw time so animating it only redraws, never
- * recomposes). The camera is framed so the whole mesh fits, whatever its size.
+ * Draws [mesh] as seen by [camera].
+ *
+ * [camera] and [transform] are called at draw time rather than read during
+ * composition, so moving the camera or animating the transform redraws
+ * without recomposing. Pair it with [rememberOrbitCamera] and
+ * [Modifier.orbit] for a view the user can turn.
  */
 @Composable
 fun Model3D(
     mesh: Mesh,
+    camera: () -> Camera,
     modifier: Modifier = Modifier,
-    rotation: () -> Float3 = { Float3() },
+    transform: () -> Mat4 = { IDENTITY },
     shading: Shading = Shading.GOURAUD,
     cullBackFaces: Boolean = true,
     color: Color = Color(0xFFCF8A4B),
@@ -32,17 +38,22 @@ fun Model3D(
 ) {
     val renderer = remember { Renderer() }
     val output = remember { RenderOutput() }
-    val camera = remember(mesh) {
-        // The mesh is moved to the origin below, so frame a sphere sitting there.
-        Camera.framing(compose3d.Bounds(mesh.bounds.min - mesh.bounds.center, mesh.bounds.max - mesh.bounds.center))
-    }
-    val center = remember(mesh) { mesh.bounds.center }
     val argb = color.toArgb()
 
     Canvas(modifier) {
         if (size.width <= 0f || size.height <= 0f) return@Canvas
-        val model = com.curiouscreature.kotlin.math.rotation(rotation()) * translation(-center)
-        renderer.render(mesh, model, camera, size.width, size.height, light, argb, shading, cullBackFaces, output)
+        renderer.render(
+            mesh,
+            transform(),
+            camera(),
+            size.width,
+            size.height,
+            light,
+            argb,
+            shading,
+            cullBackFaces,
+            output,
+        )
         if (shading == Shading.WIREFRAME) {
             val p = output.positions
             var i = 0
