@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.use
-import com.curiouscreature.kotlin.math.Float3
 import compose3d.Mesh
 import compose3d.Shading
 import kotlinx.coroutines.runBlocking
@@ -29,16 +28,18 @@ class SnapshotTest {
         val teapot = runBlocking { loadTeapotMesh() }
         val cube = Mesh.cube()
         val tile = 300
+        // Fixed angles rather than a gesture, so the snapshot is deterministic.
+        val cameras = listOf(teapot, cube).map { OrbitCameraState(it.bounds, initialYaw = 0.6f, initialPitch = 0.35f) }
         val image = ImageComposeScene(width = tile * 3, height = tile * 2).use { scene ->
             scene.setContent {
                 Column {
-                    for (mesh in listOf(teapot, cube)) {
+                    for ((mesh, orbit) in listOf(teapot, cube).zip(cameras)) {
                         Row {
                             for (mode in Shading.values()) {
                                 Model3D(
                                     mesh = mesh,
+                                    camera = orbit::camera,
                                     modifier = Modifier.size(tile.dp).background(Color(0xFF1B1F26)),
-                                    rotation = { Float3(-20f, 35f, 0f) },
                                     shading = mode,
                                 )
                             }

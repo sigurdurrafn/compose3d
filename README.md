@@ -8,6 +8,11 @@ Gouraud) and sorts the triangles far to near. `common` holds the `Model3D`
 composable, which hands the sorted triangles to the platform canvas through
 `drawVertices`. `desktop` and `android` are thin launchers.
 
+Drag the model to turn it, pinch or scroll to zoom. `rememberOrbitCamera`
+holds the angles and `Modifier.orbit` feeds gestures into them; `Model3D`
+reads the camera at draw time, so turning the view redraws without
+recomposing.
+
 Known limits of the current renderer: painter's sort instead of a depth
 buffer, and triangles crossing the near plane are dropped rather than
 clipped. The Android `drawVertices` actual
@@ -23,6 +28,9 @@ run on a device or emulator yet.
   need compileSdk 37; the app's minSdk is 23, which Compose 1.12 requires.
 - The Android SDK, for `common` (which has an Android target) and `android`.
   `engine` needs neither the SDK nor Google's Maven repository.
+- Android API 29 or newer. `Canvas.drawVertices` is only honoured on a
+  hardware-accelerated canvas from API 29, and Compose always draws into
+  one.
 
 ## Targets
 
