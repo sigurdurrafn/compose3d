@@ -17,8 +17,11 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: engine and desktop tests, wasm compile
-        run: ./gradlew --no-daemon :engine:jvmTest :desktop:jvmTest :common:compileKotlinWasmJs
+      - name: engine and desktop tests
+        run: ./gradlew --no-daemon :engine:jvmTest :desktop:jvmTest
+
+      - name: Web bundle
+        run: ./gradlew --no-daemon :web:wasmJsBrowserDistribution
 
       - name: Android compile
         run: ./gradlew --no-daemon :android:assembleDebug
@@ -29,6 +32,15 @@ jobs:
         with:
           name: model3d-snapshot
           path: desktop/build/snapshots/model3d.png
+          if-no-files-found: warn
+
+      # The bundle is a static site: download it, unzip it and serve the
+      # folder to try the demo without a toolchain.
+      - name: Upload web bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-bundle
+          path: web/build/dist/wasmJs/productionExecutable
           if-no-files-found: warn
 
   # iOS cannot be built from a non-macOS host, so this is where it is checked.

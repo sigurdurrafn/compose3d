@@ -91,15 +91,21 @@ not run on JDK 21.
       it.
 - [x] GitHub Actions workflow (`.github/workflows/ci.yml`): a `test` job
       (ubuntu-latest) runs `:engine:jvmTest`, `:desktop:jvmTest`,
-      `:common:compileKotlinWasmJs` and `:android:assembleDebug`, and uploads
-      `desktop/build/snapshots/model3d.png` as an artifact; an optional `ios`
-      job (macos-latest) runs `:common:compileKotlinIosSimulatorArm64`.
+      `:web:wasmJsBrowserDistribution` and `:android:assembleDebug`, and
+      uploads both the offscreen snapshot and the web bundle as artifacts;
+      an `ios` job (macos-latest) runs
+      `:common:compileKotlinIosSimulatorArm64`.
+- [x] Wasm browser entry point: the `web` module calls `ComposeViewport`
+      against a container in `index.html`, so `:web:wasmJsBrowserDistribution`
+      produces a static site and `:web:wasmJsBrowserDevelopmentRun` serves it.
 
 Done when `./gradlew build` passes on JDK 17 and the demo runs in a browser.
 
-Verification status: CI compiles and tests every target except a real
-device run. Remaining: run the Android app on a device or emulator (see
-item 1) and add a wasm browser entry point so the demo runs in a browser.
+Verification status: CI builds and tests every target. Remaining: run the
+Android app on a device or emulator (see item 1), and commit a
+`kotlin-js-store/yarn.lock` so the web bundle's npm dependencies are
+pinned; the lock file cannot be generated in a sandbox without access to
+Google's Maven, since the build will not configure there.
 
 ## 4. Renderer correctness and performance
 
