@@ -190,9 +190,15 @@ of each pipeline stage.
       from 120 frame requests a second to none after navigating away, and
       25 mount/unmount cycles release every context with no "too many
       active WebGL contexts" warning.
-- [ ] Check that Codeberg's git-pages serves `.wasm` as `application/wasm`,
-      compressed. Uncompressed the bundle is 10.6 MB (4.1 MB gzip, 3.2 MB
-      brotli).
+- [x] Check Codeberg's git-pages. It takes Content-Type from Go's
+      `mime.TypeByExtension`, which maps `.wasm` to `application/wasm`. It
+      zstd-compresses every file at deploy time and serves zstd to browsers
+      that send `Accept-Encoding: zstd`, the uncompressed file otherwise;
+      never gzip or brotli. Seen live on gunnarss.com (`gunnarss.js` 860 KB
+      to 240 KB). The bundle is 10.6 MB raw and about 3.8 MB as zstd;
+      browsers without zstd (older Safari) get the full 10.6 MB. Default
+      site limit is 128 MB. Still unconfirmed end to end: nothing wasm has
+      been deployed yet.
 - [ ] Decide how the bundle reaches the site's deploy: committed into the
       site repo, or built by `deploy.sh`. Currently gitignored there.
 - [ ] Poster images for the click-to-load placeholders, rendered by the
