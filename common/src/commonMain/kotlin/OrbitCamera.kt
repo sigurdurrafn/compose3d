@@ -116,10 +116,14 @@ fun rememberOrbitCamera(
 /**
  * Drives [state] from drag and pinch gestures, and from the scroll wheel on
  * platforms that have one.
+ *
+ * Set [zoomOnScroll] to false when the view sits inside a scrolling page, so
+ * the wheel scrolls the page rather than zooming the model.
  */
 @OptIn(ExperimentalComposeUiApi::class)
-fun Modifier.orbit(state: OrbitCameraState): Modifier = this
-    .pointerInput(state) {
+fun Modifier.orbit(state: OrbitCameraState, zoomOnScroll: Boolean = true): Modifier = this
+    .pointerInput(state, zoomOnScroll) {
+        if (!zoomOnScroll) return@pointerInput
         awaitPointerEventScope {
             while (true) {
                 val event = awaitPointerEvent()
