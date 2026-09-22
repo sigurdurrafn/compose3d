@@ -58,7 +58,9 @@ run on a device or emulator yet.
 **Embedding in another site**
 
 The web bundle exports `mountDemo(containerId, demoId)`, so a host page can
-load `compose3d.js` once and mount several demos into its own elements. The
+load `compose3d.js` once and mount several demos into its own elements.
+`mountDemo` returns a handle; pass it to `unmountDemo` when the container
+leaves the page, which stops the demo and frees its WebGL context. The
 bundle resolves Compose resources against the directory it was loaded from,
 so it works from any page path. `web/src/wasmJsMain/resources/embed.html` is
 a two-demo test page for this.

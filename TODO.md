@@ -183,9 +183,13 @@ of each pipeline stage.
       from `/compose3d/composeResources` on a `/blog/...` page, the wheel
       scrolls the page over a demo (`Modifier.orbit(zoomOnScroll = false)`),
       and demos remount after client-side navigation.
-- [ ] Dispose viewports on unmount. `mountDemo` returns nothing, so leaving
-      a page keeps its Compose instances alive; a spinning demo keeps asking
-      for frames.
+- [x] Unmount demos. `mountDemo` returns a handle and `unmountDemo(handle)`
+      drops the demo from its composition and loses the canvas's WebGL
+      context; Compose 1.12 has no public viewport dispose. The site widget
+      unmounts when it leaves composition. Checked: a spinning demo goes
+      from 120 frame requests a second to none after navigating away, and
+      25 mount/unmount cycles release every context with no "too many
+      active WebGL contexts" warning.
 - [ ] Check that Codeberg's git-pages serves `.wasm` as `application/wasm`,
       compressed. Uncompressed the bundle is 10.6 MB (4.1 MB gzip, 3.2 MB
       brotli).
