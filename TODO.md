@@ -168,3 +168,56 @@ nothing else in the Compose Multiplatform ecosystem serves.
       only checking that pixels are not background.
 - [ ] Wireframe mode draws one `drawLine` per edge. Batch into
       `drawPoints(PointMode.Lines)` or a single `Path`.
+
+## 5. Teaching site
+
+Direction: the project is primarily a way to learn how 3D graphics work.
+The renderer grows lesson by lesson, and each lesson becomes a post on
+gunnarss.com with live demos, code taken from this repo, and a description
+of each pipeline stage.
+
+- [x] Embedding spike. `web` exports `mountDemo(containerId, demoId)`;
+      `:web:syncToSite` copies the bundle into the Kobweb site; the site's
+      `Compose3DDemo` widget loads it on click and mounts a demo. Checked on
+      `kobweb run`: two demos share one bundle load, the teapot resolves
+      from `/compose3d/composeResources` on a `/blog/...` page, the wheel
+      scrolls the page over a demo (`Modifier.orbit(zoomOnScroll = false)`),
+      and demos remount after client-side navigation.
+- [x] Unmount demos. `mountDemo` returns a handle and `unmountDemo(handle)`
+      drops the demo from its composition and loses the canvas's WebGL
+      context; Compose 1.12 has no public viewport dispose. The site widget
+      unmounts when it leaves composition. Checked: a spinning demo goes
+      from 120 frame requests a second to none after navigating away, and
+      25 mount/unmount cycles release every context with no "too many
+      active WebGL contexts" warning.
+- [x] Check Codeberg's git-pages. It takes Content-Type from Go's
+      `mime.TypeByExtension`, which maps `.wasm` to `application/wasm`. It
+      zstd-compresses every file at deploy time and serves zstd to browsers
+      that send `Accept-Encoding: zstd`, the uncompressed file otherwise;
+      never gzip or brotli. Seen live on gunnarss.com (`gunnarss.js` 860 KB
+      to 240 KB). The bundle is 10.6 MB raw and about 3.8 MB as zstd;
+      browsers without zstd (older Safari) get the full 10.6 MB. Default
+      site limit is 128 MB. Still unconfirmed end to end: nothing wasm has
+      been deployed yet.
+- [ ] Decide how the bundle reaches the site's deploy: committed into the
+      site repo, or built by `deploy.sh`. Currently gitignored there.
+- [ ] Poster images for the click-to-load placeholders, rendered by the
+      offscreen snapshot test.
+- [ ] Demo registry (id, title, composable) and demos designed for an
+      article column: no Material chrome, readable on the site's dark theme.
+- [ ] Snippet extraction: `// region lesson:<name>` markers in the source,
+      copied into posts by a script, so a post shows the code that runs.
+- [ ] Pipeline explorer: one mesh shown at each stage (model, world, view,
+      clip, NDC, screen) with toggles for culling, shading and sort order,
+      and a side view of the view frustum.
+
+Posts, each shipping with the renderer work it teaches:
+
+1. Meshes: vertices and indices, from points to wireframe.
+2. Transforms: model, view, projection and the perspective divide.
+3. To the screen: viewport mapping, back-face culling, handing triangles to
+   Skia.
+4. Lighting: flat, Gouraud, then Blinn-Phong (section 4).
+5. Visibility: where the painter's sort breaks, then a software z-buffer
+   (section 4).
+6. Clipping: near-plane holes, then Sutherland-Hodgman (section 4).

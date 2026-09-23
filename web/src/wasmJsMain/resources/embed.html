@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>compose3d embed test</title>
+    <!-- Checks the embedding contract a host page relies on: one bundle,
+         several demos mounted with mountDemo, the page still scrolls. -->
+    <style>
+        body { margin: 0 auto; max-width: 720px; padding: 16px; font-family: sans-serif; }
+        .demo { width: 100%; aspect-ratio: 1; margin: 24px 0; }
+        .spacer { height: 60vh; background: repeating-linear-gradient(#eee 0 20px, #fff 20px 40px); }
+    </style>
+</head>
+<body>
+<p>Scroll over the demos: the page should scroll, dragging should turn them.</p>
+<div id="a" class="demo"></div>
+<div class="spacer"></div>
+<div id="b" class="demo"></div>
+<div class="spacer"></div>
+<script src="compose3d.js"></script>
+<script>
+    Promise.resolve(globalThis.web).then(exports => {
+        const mod = exports.default ?? exports;
+        console.log("compose3d exports:", Object.keys(mod));
+        mod.mountDemo("a", "cube");
+        mod.mountDemo("b", "explorer");
+    });
+</script>
+</body>
+</html>
