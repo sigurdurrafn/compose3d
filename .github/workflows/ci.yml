@@ -17,8 +17,8 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: engine and desktop tests
-        run: ./gradlew --no-daemon :engine:jvmTest :desktop:jvmTest
+      - name: engine, lessons and desktop tests
+        run: ./gradlew --no-daemon :engine:jvmTest :lessons:jvmTest :desktop:jvmTest
 
       - name: Web bundle
         run: ./gradlew --no-daemon :web:wasmJsBrowserDistribution
