@@ -23,5 +23,6 @@ include(
     ":android",
     ":desktop",
     ":engine",
+    ":lessons",
     ":web",
 )

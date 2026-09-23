@@ -17,6 +17,7 @@ class Bounds(val min: Float3, val max: Float3) {
     }
 }
 
+// region lesson:mesh-class
 /**
  * Indexed triangle mesh stored in flat buffers.
  *
@@ -39,6 +40,7 @@ class Mesh(
 
     val vertexCount: Int get() = positions.size / 3
     val triangleCount: Int get() = indices.size / 3
+    // endregion
 
     val normals: FloatArray = normals ?: computeSmoothNormals(positions, indices)
 

@@ -17,6 +17,7 @@ fun parseObj(text: String, name: String = "obj"): Mesh {
         val commentStart = rawLine.indexOf('#')
         val line = (if (commentStart < 0) rawLine else rawLine.substring(0, commentStart)).trim()
         if (line.length < 2) continue
+        // region lesson:obj-records
         when {
             line[0] == 'v' && line[1].isWhitespace() -> {
                 val parts = line.split(WHITESPACE)
@@ -43,6 +44,7 @@ fun parseObj(text: String, name: String = "obj"): Mesh {
                 }
             }
         }
+        // endregion
     }
     return Mesh(name, positions.toArray(), indices.toArray())
 }

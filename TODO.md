@@ -203,17 +203,22 @@ of each pipeline stage.
       site repo, or built by `deploy.sh`. Currently gitignored there.
 - [ ] Poster images for the click-to-load placeholders, rendered by the
       offscreen snapshot test.
-- [ ] Demo registry (id, title, composable) and demos designed for an
-      article column: no Material chrome, readable on the site's dark theme.
-- [ ] Snippet extraction: `// region lesson:<name>` markers in the source,
-      copied into posts by a script, so a post shows the code that runs.
+- [x] Demo registry: `Demos` in the `lessons` module maps ids to
+      composables; `mountDemo` looks ids up there. Lesson demos share
+      `OrbitFrame` (dark panel, drag to orbit, idle spin, controls below the
+      view so they never cover the model on a phone).
+- [x] Snippet extraction: `// region lesson:<name>` markers in the source,
+      copied into posts by `scripts/sync_snippets.py`, so a post shows the
+      code that runs. `--check` fails on a stale post.
 - [ ] Pipeline explorer: one mesh shown at each stage (model, world, view,
       clip, NDC, screen) with toggles for culling, shading and sort order,
       and a side view of the view frustum.
 
 Posts, each shipping with the renderer work it teaches:
 
-1. Meshes: vertices and indices, from points to wireframe.
+1. Meshes: vertices and indices, from points to wireframe. Drafted as
+   `blog/from_scratch_meshes.md` (route `/blog/3d-from-scratch-meshes`),
+   with demos `mesh-vertices`, `mesh-triangles` and `mesh-teapot`.
 2. Transforms: model, view, projection and the perspective divide.
 3. To the screen: viewport mapping, back-face culling, handing triangles to
    Skia.
