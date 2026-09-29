@@ -20,7 +20,7 @@ kotlin {
     sourceSets {
         val wasmJsMain by getting {
             dependencies {
-                implementation(project(":common"))
+                implementation(project(":lessons"))
                 implementation(compose.components.resources)
             }
         }

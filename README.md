@@ -6,7 +6,9 @@ index buffers), `Camera`, `Light`, `Renderer` and an OBJ parser. `Renderer`
 transforms a mesh into screen space, culls back faces, lights it (flat or
 Gouraud) and sorts the triangles far to near. `common` holds the `Model3D`
 composable, which hands the sorted triangles to the platform canvas through
-`drawVertices`. `desktop` and `android` are thin launchers.
+`drawVertices`. `lessons` holds the demos for the teaching posts and the
+`Demos` registry the web bundle mounts them from. `desktop` and `android`
+are thin launchers.
 
 Drag the model to turn it, pinch or scroll to zoom. `rememberOrbitCamera`
 holds the angles and `Modifier.orbit` feeds gestures into them; `Model3D`
@@ -68,6 +70,10 @@ a two-demo test page for this.
 - `./gradlew :web:syncToSite` - copy the production bundle into
   `../gunnarss/site/src/jsMain/resources/public/compose3d` (override with
   `-PsiteDir=...`)
+- `scripts/sync_snippets.py` - copy `// region lesson:<name>` blocks from the
+  source into the posts' code blocks marked `[//]: # (snippet <name>)`
+  (defaults to every post in `../gunnarss/.../markdown/blog`; `--check` only
+  reports stale posts)
 
 **Android**
 - `./gradlew installDebug` - install Android application on an Android device (on a real device or on an emulator)
