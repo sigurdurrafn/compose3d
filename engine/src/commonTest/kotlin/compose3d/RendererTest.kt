@@ -1,9 +1,9 @@
 package compose3d
 
-import com.curiouscreature.kotlin.math.Float3
-import com.curiouscreature.kotlin.math.Mat4
-import com.curiouscreature.kotlin.math.normalize
-import com.curiouscreature.kotlin.math.translation
+import compose3d.math.Float3
+import compose3d.math.Mat4
+import compose3d.math.normalize
+import compose3d.math.translation
 import kotlin.math.abs
 import kotlin.test.Test
 import kotlin.test.assertEquals

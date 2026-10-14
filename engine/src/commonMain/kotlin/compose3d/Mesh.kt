@@ -1,6 +1,6 @@
 package compose3d
 
-import com.curiouscreature.kotlin.math.Float3
+import compose3d.math.Float3
 import kotlin.math.max
 import kotlin.math.sqrt
 

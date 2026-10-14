@@ -1,6 +1,5 @@
 package compose3d.lessons
 
-import OrbitCameraState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,8 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -29,10 +28,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.curiouscreature.kotlin.math.Mat4
 import compose3d.Mesh
+import compose3d.math.Mat4
 import compose3d.projectVertices
-import orbit
+import compose3d.ui.OrbitCameraState
+import compose3d.ui.orbit
 
 /** Colours shared by the lesson demos, picked to sit in the site's dark theme. */
 internal object LessonColors {

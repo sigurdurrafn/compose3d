@@ -2,13 +2,16 @@
 Software 3D pipeline drawn through Compose, with Skia doing the triangle fill.
 
 `engine` is plain Kotlin with no Compose dependency: `Mesh` (flat vertex and
-index buffers), `Camera`, `Light`, `Renderer` and an OBJ parser. `Renderer`
-transforms a mesh into screen space, culls back faces, lights it (flat or
-Gouraud) and sorts the triangles far to near. `common` holds the `Model3D`
-composable, which hands the sorted triangles to the platform canvas through
-`drawVertices`. `lessons` holds the demos for the teaching posts and the
-`Demos` registry the web bundle mounts them from. `desktop` and `android`
-are thin launchers.
+index buffers), `Camera`, `Light`, `Renderer` and an OBJ parser in
+`compose3d`, and the vector and matrix types in `compose3d.math` (Romain
+Guy's kotlin-math, vendored under Apache 2.0). `Renderer` transforms a mesh
+into screen space, culls back faces, lights it (flat or Gouraud) and sorts
+the triangles far to near. `common` holds the `Model3D` composable and the
+orbit camera in `compose3d.ui`; `Model3D` hands the sorted triangles to the
+platform canvas through `drawVertices`. The demo app and the teapot loader
+sit apart in `compose3d.demo`. `lessons` holds the demos for the teaching
+posts and the `Demos` registry the web bundle mounts them from. `desktop`
+and `android` are thin launchers.
 
 Drag the model to turn it, pinch or scroll to zoom. `rememberOrbitCamera`
 holds the angles and `Modifier.orbit` feeds gestures into them; `Model3D`
@@ -18,7 +21,7 @@ recomposing.
 Known limits of the current renderer: painter's sort instead of a depth
 buffer, and triangles crossing the near plane are dropped rather than
 clipped. The Android `drawVertices` actual
-(`common/src/androidMain/kotlin/DrawTriangles.android.kt`) is written but not
+(`common/src/androidMain/kotlin/compose3d/ui/DrawTriangles.android.kt`) is written but not
 run on a device or emulator yet.
 
 ## Build requirements

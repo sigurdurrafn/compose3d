@@ -1,3 +1,5 @@
+package compose3d.ui
+
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable

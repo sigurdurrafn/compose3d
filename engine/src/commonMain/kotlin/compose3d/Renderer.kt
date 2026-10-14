@@ -1,10 +1,10 @@
 package compose3d
 
-import com.curiouscreature.kotlin.math.Float3
-import com.curiouscreature.kotlin.math.Mat4
-import com.curiouscreature.kotlin.math.inverse
-import com.curiouscreature.kotlin.math.normalize
-import com.curiouscreature.kotlin.math.transpose
+import compose3d.math.Float3
+import compose3d.math.Mat4
+import compose3d.math.inverse
+import compose3d.math.normalize
+import compose3d.math.transpose
 import kotlin.math.sqrt
 
 enum class Shading { WIREFRAME, FLAT, GOURAUD }

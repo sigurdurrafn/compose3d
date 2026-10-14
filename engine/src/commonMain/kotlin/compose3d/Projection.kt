@@ -1,7 +1,7 @@
 package compose3d
 
-import com.curiouscreature.kotlin.math.Float4
-import com.curiouscreature.kotlin.math.Mat4
+import compose3d.math.Float4
+import compose3d.math.Mat4
 
 /**
  * Projects every vertex of [mesh] to viewport pixels, writing x, y and depth

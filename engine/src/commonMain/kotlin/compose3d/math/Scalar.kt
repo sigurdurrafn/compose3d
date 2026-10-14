@@ -12,11 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modified for compose3d: moved from package com.curiouscreature.kotlin.math
+ * to compose3d.math.
  */
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.curiouscreature.kotlin.math
+package compose3d.math
 
 const val PI          = 3.1415926536f
 const val HALF_PI     = PI * 0.5f

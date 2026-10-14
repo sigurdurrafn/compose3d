@@ -1,3 +1,5 @@
+package compose3d.ui
+
 import androidx.compose.ui.graphics.drawscope.DrawScope
 
 /**

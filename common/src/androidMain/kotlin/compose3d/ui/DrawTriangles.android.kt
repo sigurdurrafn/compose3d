@@ -1,3 +1,5 @@
+package compose3d.ui
+
 import android.graphics.Canvas as AndroidCanvas
 import android.graphics.Color as AndroidColor
 import android.graphics.Paint

@@ -17,7 +17,7 @@ done so it is clear when to stop.
       source set (landed with item 3).
 - [x] Implement `DrawScope.drawTriangles` with
       `android.graphics.Canvas.drawVertices`
-      (`common/src/androidMain/kotlin/DrawTriangles.android.kt`). Android's
+      (`common/src/androidMain/kotlin/compose3d/ui/DrawTriangles.android.kt`). Android's
       API takes counts and offsets, so no per-frame array copy is needed
       there.
 - [x] Check the minimum API level at which hardware-accelerated canvases
@@ -76,18 +76,18 @@ not run on JDK 21.
 - [x] Add `iosArm64`/`iosSimulatorArm64` and `wasmJs` targets to `engine`
       and `common`. The Skiko `drawTriangles` actual lives in a shared
       `skikoMain` source set and serves desktop, iOS and wasm unchanged
-      (`common/src/skikoMain/kotlin/DrawTriangles.skiko.kt`).
+      (`common/src/skikoMain/kotlin/compose3d/ui/DrawTriangles.skiko.kt`).
 - [x] Add an `android` target to `common`
       (`com.android.kotlin.multiplatform.library`) with its own `androidMain`
       `drawTriangles` actual
       using `android.graphics.Canvas.drawVertices`
-      (`common/src/androidMain/kotlin/DrawTriangles.android.kt`), guarded by
+      (`common/src/androidMain/kotlin/compose3d/ui/DrawTriangles.android.kt`), guarded by
       the same `BlendMode.DST`-style trap: a plain white paint so vertex
       colours are not tinted.
 - [x] Load the teapot through Compose resources: moved to
       `common/src/commonMain/composeResources/files/teapot.obj`, read via the
       generated `Res.readBytes("files/teapot.obj")`
-      (`common/src/commonMain/kotlin/Resources.kt`), so every target shares
+      (`common/src/commonMain/kotlin/compose3d/demo/Resources.kt`), so every target shares
       it.
 - [x] GitHub Actions workflow (`.github/workflows/ci.yml`): a `test` job
       (ubuntu-latest) runs `:engine:jvmTest`, `:desktop:jvmTest`,

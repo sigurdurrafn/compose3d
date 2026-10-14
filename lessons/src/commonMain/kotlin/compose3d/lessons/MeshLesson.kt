@@ -1,6 +1,5 @@
 package compose3d.lessons
 
-import Model3D
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -31,11 +30,12 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import compose3d.Mesh
+import compose3d.demo.loadTeapotMesh
+import compose3d.ui.Model3D
+import compose3d.ui.rememberOrbitCamera
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
-import loadTeapotMesh
-import rememberOrbitCamera
 
 /**
  * A cube with each corner stored once: 8 vertices shared by 12 triangles.

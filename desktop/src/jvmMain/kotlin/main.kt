@@ -3,6 +3,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import compose3d.Mesh
+import compose3d.demo.App
+import compose3d.demo.loadTeapotMesh
 import kotlinx.coroutines.runBlocking
 
 fun main() {

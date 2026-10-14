@@ -1,3 +1,5 @@
+package compose3d.demo
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import compose3d.Mesh
 import compose3d.Shading
+import compose3d.ui.Model3D
+import compose3d.ui.orbit
+import compose3d.ui.rememberOrbitCamera
 
 /** Radians per second while the spin toggle is on. */
 private const val SPIN_RATE = 0.5f

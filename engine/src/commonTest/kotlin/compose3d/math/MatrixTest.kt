@@ -12,9 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modified for compose3d: moved from package com.curiouscreature.kotlin.math
+ * to compose3d.math.
  */
 
-package com.curiouscreature.kotlin.math
+package compose3d.math
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

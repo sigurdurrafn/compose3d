@@ -1,8 +1,8 @@
 package compose3d
 
-import com.curiouscreature.kotlin.math.Float3
-import com.curiouscreature.kotlin.math.Mat4
-import com.curiouscreature.kotlin.math.length
+import compose3d.math.Float3
+import compose3d.math.Mat4
+import compose3d.math.length
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.test.Test

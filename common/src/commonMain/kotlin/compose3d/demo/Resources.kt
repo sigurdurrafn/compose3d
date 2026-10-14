@@ -1,3 +1,5 @@
+package compose3d.demo
+
 import compose3d.Mesh
 import compose3d.parseObj
 import compose3d.resources.Res

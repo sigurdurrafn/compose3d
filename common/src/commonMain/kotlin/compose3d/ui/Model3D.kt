@@ -1,3 +1,5 @@
+package compose3d.ui
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -5,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.curiouscreature.kotlin.math.Mat4
+import compose3d.math.Mat4
 import compose3d.Camera
 import compose3d.Light
 import compose3d.Mesh

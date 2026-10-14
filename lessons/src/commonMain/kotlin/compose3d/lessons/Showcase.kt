@@ -1,7 +1,5 @@
 package compose3d.lessons
 
-import App
-import Model3D
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -12,9 +10,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import compose3d.Mesh
-import loadTeapotMesh
-import orbit
-import rememberOrbitCamera
+import compose3d.demo.App
+import compose3d.demo.loadTeapotMesh
+import compose3d.ui.Model3D
+import compose3d.ui.orbit
+import compose3d.ui.rememberOrbitCamera
 
 /** The full demo app: shading modes, culling and spin over the teapot. */
 @Composable

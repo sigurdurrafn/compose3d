@@ -10,12 +10,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.use
 import compose3d.Mesh
 import compose3d.Shading
-import kotlinx.coroutines.runBlocking
-import org.jetbrains.skia.EncodedImageFormat
+import compose3d.demo.loadTeapotMesh
+import compose3d.ui.Model3D
+import compose3d.ui.OrbitCameraState
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.skia.EncodedImageFormat
 
 /**
  * Renders the teapot and the cube in every shading mode to a PNG under
